@@ -1,4 +1,5 @@
-# Nur Atiya Sukmawati 240411100138
+# 240411100138 Nur Atiya Sukmawati
+
 
 Welcome to Website Mata Kuliah Penambangan Data 👋
 
