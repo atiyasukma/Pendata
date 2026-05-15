@@ -1,0 +1,1351 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Weighted K-Nearest Neighbor &#8212; Penambangan Data</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'wknn';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Analisa Data Kesuburan Tanah" href="UTS%20PENDAT.html" />
+    <link rel="prev" title="Deployment" href="Deployment.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.jpeg" class="logo__image only-light" alt="Penambangan Data - Home"/>
+    <img src="_static/logo.jpeg" class="logo__image only-dark pst-js-only" alt="Penambangan Data - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Pengantar Mata Kuliah Penambangan Data
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Business_Understanding.html">Business Understanding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data_Understanding.html">Data Understanding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data_Preparation.html">Data Preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modelling.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deployment.html">Deployment</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Weighted K-Nearest Neighbor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UTS%20PENDAT.html">Analisa Data Kesuburan Tanah</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Analisa%20Data%20Menggunakan%20Naive%20Bayes.html">Analisa Data Menggunakan Naive Bayes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Decision%20Tree.html">Analisis Data Menggunakan Pohon Keputusan (Decision Tree) di KNIME</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Random_Forest.html">Analisis Klasifikasi Data Menggunakan Random Forest</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fwknn.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/wknn.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Weighted K-Nearest Neighbor</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset">1. Dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hitung-jarak">2. Hitung Jarak</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hitung-kemiripan">3. Hitung Kemiripan</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#weighted-average">4. Weighted Average</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hasil-estimasi">5. Hasil Estimasi</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-hitung-selisih">A. Hitung Selisih</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#b-hitung-kuadrat-jarak">B. Hitung kuadrat jarak</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-hitung-bobot-kemiripan">C. Hitung bobot / kemiripan</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-hitung-bobot-nilai">D. Hitung bobot × nilai</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#e-hitung-nilai-pembilang">E. Hitung nilai Pembilang</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#f-hitung-nilai-penyebut">F. Hitung Nilai Penyebut</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#g-estimasi-nilai">G. Estimasi Nilai</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#normalisasi-data">Normalisasi Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jenis-jenis-normalisasi-data">Jenis-Jenis Normalisasi Data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#i-min-max-normalization">I. Min-Max Normalization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ii-z-score-normalization-standardization">II. Z-Score Normalization (Standardization)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iii-decimal-scaling">III. Decimal Scaling</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="weighted-k-nearest-neighbor">
+<h1>Weighted K-Nearest Neighbor<a class="headerlink" href="#weighted-k-nearest-neighbor" title="Link to this heading">#</a></h1>
+<p>Missing Values Imputation menggunakan Weighted K-Nearest Neighbor (WKNN)</p>
+<p><em>Hasil Excel</em></p>
+<p><img alt="Screenshot 2026-03-15 221639.png" src="data:image/png;base64,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Ps/oglE8LtadOu9y/CKnT3JDwTSWMtdD5AaeI0eOTKpxzfDwMJYvX66mqBzj4+NoaWlRU0SsE8Q6UAmWnXOv/evX1Rg5cczHvqLGqBw8Zp0zyo4t5kRERERELsDAnIiIiIjIBRiYExERERG5AANzIiIiIiIX8IyOjk6ab0cspnHOOYXvwEVERETuNvuZTWqMnDh0xgo1RjS92CtLFfFqZMrFOkGsA86x7Jxj2TnHsnOOZeecUXZMZSEiIiIicgEG5kRERERELsDAnIiIiIjIBRiYExERERG5AANzIiIiIiIXYGBOREREROQCDMyJiIiIiFyAgTkRERERkQswMCciIiIicgEG5kRERERELsDAnIiIiIjIBRiYExERERG5AANzIiIiIiIXYGBOREREROQCDMyJiIiIiFyAgTkRERERkQswMCciIiIicgEG5kRERERELsDAnIiIiIjIBRiYExERERG5AANzIiIiIiIXYGBOREREROQCntHR0UkBxiCmcc4556iHiYiIiIhoOniOHDkyqcY1w8PDWL58uZqicoyPj6OlpUVNEbFOEOtAJVh2zrHsnGPZOceyc84oO6ayEBERERG5AANzIiIiIiIXYGBOREREROQCDMyJiIiIiFyAgTkRERERkQswMCciIiIicgEG5kRERERELsDAnIiIiIjIBRiYExERERG5AANzIiIiIiIXYGBOREREROQCDMyJiIiIiFyAgTkRERERkQswMCciIiIicgEG5kRERERELsDAnIiIiIjIBRiYExERERG5AANzIiIiIiIXYGBOREREROQCDMyJiIiIiFyAgTkRERERkQswMCciIiIicgHP6OjopABjENM49vLL1cNEVKmT9+9XY0RERESFeY4cOTKpxjXDw8MMzImqaKE44aXmNT4+jpaWFjVF5WDZOceyc45l5xzLzjmj7JjKQkRERETkAgzMiYiIiIhcgIE5EREREZELMDAnIiIiInIBBuZERERERC7QVIH5fWK4UAwvaFPAk2IwTxMRERER1YutwFwGrjKAzR3+Tgz1Zrw2GWTn+pYY3PAaiYiIiIhKKavFfI0YHjENkgyKnbQ4y+fJFuzptFwM8nWfqE0REREREblHRaks/yiG08XwDW2KiIiIiIicqjjH/EoxPCcGcyqJkbttHgzGY9L3xCDHzekmxZ5bKWPdxVr4S23fvA7z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" /></p>
+<section id="dataset">
+<h2>1. Dataset<a class="headerlink" href="#dataset" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>ID</p></th>
+<th class="head"><p>Harga Diskon</p></th>
+<th class="head"><p>Tiket Terjual</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>10</p></td>
+<td><p>500</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>20</p></td>
+<td><p>420</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>40</p></td>
+<td><p>300</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>60</p></td>
+<td><p>210</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>80</p></td>
+<td><p>100</p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p>46</p></td>
+<td><p>?</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>Data Target</em></p>
+<ul class="simple">
+<li><p>Harga Diskon: 45</p></li>
+<li><p>Tiket terjual: ?</p></li>
+</ul>
+</section>
+<section id="hitung-jarak">
+<h2>2. Hitung Jarak<a class="headerlink" href="#hitung-jarak" title="Link to this heading">#</a></h2>
+<p>Menggunakan jarak Euclidean untuk mengukur kedekatan antara harga diskon pada dataset dengan harga target (45).</p>
+<p><span class="math notranslate nohighlight">\(
+d(x_i, x_j) = (x_i - x_j)^2
+\)</span></p>
+<p>Keterangan:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(d\)</span>  → Nilai jarak kuadrat hasil perhitungan.</p></li>
+<li><p><span class="math notranslate nohighlight">\(x_i\)</span>  → Harga diskon yang ada di data.</p></li>
+<li><p><span class="math notranslate nohighlight">\(x_j\)</span>  → Harga target yang ingin dicari (45).</p></li>
+<li><p><span class="math notranslate nohighlight">\((...)^2\)</span>  → Pangkat dua untuk memastikan hasil selalu positif.</p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tetangga(Harga)</p></th>
+<th class="head"><p>Selisih</p></th>
+<th class="head"><p>Kuadrat</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>10</p></td>
+<td><p>-35</p></td>
+<td><p>1225</p></td>
+</tr>
+<tr class="row-odd"><td><p>20</p></td>
+<td><p>-25</p></td>
+<td><p>625</p></td>
+</tr>
+<tr class="row-even"><td><p>40</p></td>
+<td><p>-5</p></td>
+<td><p>25</p></td>
+</tr>
+<tr class="row-odd"><td><p>60</p></td>
+<td><p>15</p></td>
+<td><p>225</p></td>
+</tr>
+<tr class="row-even"><td><p>80</p></td>
+<td><p>35</p></td>
+<td><p>1225</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="hitung-kemiripan">
+<h2>3. Hitung Kemiripan<a class="headerlink" href="#hitung-kemiripan" title="Link to this heading">#</a></h2>
+<p>Menggunakan rumus bobot untuk menentukan seberapa besar pengaruh setiap data tetangga terhadap estimasi data yang hilang.</p>
+<div class="math notranslate nohighlight">
+\[
+w = \frac{1}{d}
+\]</div>
+<p>Keterangan:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(w\)</span>  → Weight/Bobot</p></li>
+<li><p><span class="math notranslate nohighlight">\(d\)</span>  → Distance/Jarak</p></li>
+<li><p>1 → konstanta</p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Harga Diskon</p></th>
+<th class="head"><p>Tiket Terjual</p></th>
+<th class="head"><p>Bobot</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>10</p></td>
+<td><p>500</p></td>
+<td><p>0.000816</p></td>
+</tr>
+<tr class="row-odd"><td><p>20</p></td>
+<td><p>420</p></td>
+<td><p>0.0016</p></td>
+</tr>
+<tr class="row-even"><td><p>40</p></td>
+<td><p>300</p></td>
+<td><p>0.04</p></td>
+</tr>
+<tr class="row-odd"><td><p>60</p></td>
+<td><p>210</p></td>
+<td><p>0.004444</p></td>
+</tr>
+<tr class="row-even"><td><p>80</p></td>
+<td><p>100</p></td>
+<td><p>0.000816</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="weighted-average">
+<h2>4. Weighted Average<a class="headerlink" href="#weighted-average" title="Link to this heading">#</a></h2>
+<p><em>Pembilang (Total Bobot x Tiket Terjual):</em></p>
+<p>(0.000816 × 500) + (0.0016 × 420) + (0.04 × 300) + (0.004444 × 210) + (0.000816 × 100)</p>
+<ul class="simple">
+<li><p>Hasil: 14.09513</p></li>
+</ul>
+<p><em>Penyebut (Total Bobot):</em></p>
+<p>0.000816 + 0.0016 + 0.04 + 0.004444 + 0.000816</p>
+<ul class="simple">
+<li><p>Hasil: 0.047677</p></li>
+</ul>
+</section>
+<section id="hasil-estimasi">
+<h2>5. Hasil Estimasi<a class="headerlink" href="#hasil-estimasi" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[\text{Nilai} = \frac{14,09513}{0,047677}\]</div>
+<div class="math notranslate nohighlight">
+\[\approx 295,641151\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">harga</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">80</span><span class="p">]</span>
+<span class="n">tiket</span> <span class="o">=</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">420</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+
+<span class="n">target</span> <span class="o">=</span> <span class="mi">45</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DATASET&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Harga Diskon :&quot;</span><span class="p">,</span> <span class="n">harga</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tiket Terjual :&quot;</span><span class="p">,</span> <span class="n">tiket</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Target Harga  :&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DATASET
+Harga Diskon : [10, 20, 40, 60, 80]
+Tiket Terjual : [500, 420, 300, 210, 100]
+Target Harga  : 45
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="a-hitung-selisih">
+<h2>A. Hitung Selisih<a class="headerlink" href="#a-hitung-selisih" title="Link to this heading">#</a></h2>
+<p>Data harga yang digunakan: [10, 20, 40, 60, 80] dengan target 45.
+<em>Proses Pengurangan:</em></p>
+<ul class="simple">
+<li><p>10 - 45 = -35</p></li>
+<li><p>20 - 45 = -25</p></li>
+<li><p>40 - 45 = -5</p></li>
+<li><p>60 - 45 = 15</p></li>
+<li><p>80 - 45 = 35</p></li>
+</ul>
+<p>Bagian ini bertujuan untuk mengukur rentang atau jarak linear antara setiap harga di dataset dengan harga target (45). Selisih ini memberi tahu kita posisi data; jika hasilnya negatif berarti di bawah target, dan jika positif berarti di atas target.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># List harga dan target</span>
+<span class="n">harga</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">80</span><span class="p">]</span>
+<span class="n">target</span> <span class="o">=</span> <span class="mi">45</span>
+
+<span class="c1"># Menghitung selisih satu per satu</span>
+<span class="n">selisih</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">harga</span><span class="p">:</span>
+    <span class="n">hasil</span> <span class="o">=</span> <span class="n">h</span> <span class="o">-</span> <span class="n">target</span>
+    <span class="n">selisih</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hasil</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hasil Selisih (Harga - Target):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">selisih</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hasil Selisih (Harga - Target):
+[-35, -25, -5, 15, 35]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="b-hitung-kuadrat-jarak">
+<h2>B. Hitung kuadrat jarak<a class="headerlink" href="#b-hitung-kuadrat-jarak" title="Link to this heading">#</a></h2>
+<p>selisih = [-35, -25, -5, 15, 35]</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned} (-35)^2 &amp;= 1225 \\ (-25)^2 &amp;= 625 \\ (-5)^2 &amp;= 25 \\ 15^2 &amp;= 225 \\ 35^2 &amp;= 1225 \end{aligned}\end{split}\]</div>
+<p>Setelah selisih didapat, angka-angka tersebut dipangkatkan dua untuk menghilangkan tanda negatif agar semua jarak menjadi bernilai positif (absolut).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Menghitung kuadrat untuk setiap elemen dalam list selisih</span>
+<span class="n">hasil_kuadrat</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">selisih</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Daftar Jarak Kuadrat:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">hasil_kuadrat</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Daftar Jarak Kuadrat:
+[1225, 625, 25, 225, 1225]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="c-hitung-bobot-kemiripan">
+<h2>C. Hitung bobot / kemiripan<a class="headerlink" href="#c-hitung-bobot-kemiripan" title="Link to this heading">#</a></h2>
+<p>Berikut adalah rincian pembagian nilai berdasarkan jarak kuadrat untuk mencari tingkat kemiripan:</p>
+<div class="math notranslate nohighlight">
+\[\frac{1}{1225} = 0.000816$$$$\frac{1}{625} = 0.0016$$$$\frac{1}{25} = 0.04$$$$\frac{1}{225} = 0.004444$$$$\frac{1}{1225} = 0.000816\]</div>
+<p>Inti dari tahap ini adalah membalik nilai jarak menjadi bobot. Data yang jaraknya paling kecil (paling dekat dengan harga 45) secara otomatis akan mendapatkan nilai bobot paling besar. Dengan begitu, data yang paling mirip akan memberikan pengaruh paling kuat pada hasil prediksi akhir nanti.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Definisikan selisih</span>
+<span class="n">selisih</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">35</span><span class="p">,</span> <span class="o">-</span><span class="mi">25</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">35</span><span class="p">]</span>
+
+<span class="c1"># 2. Hitung kuadrat</span>
+<span class="n">kuadrat</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">selisih</span><span class="p">]</span>
+
+<span class="c1"># 3. Hitung bobot</span>
+<span class="n">hasil_bobot</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">kuadrat</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">d</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">d</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="n">hasil_bobot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">hasil_bobot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hasil Kuadrat:&quot;</span><span class="p">,</span> <span class="n">kuadrat</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hasil Bobot  :&quot;</span><span class="p">,</span> <span class="n">hasil_bobot</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hasil Kuadrat: [1225, 625, 25, 225, 1225]
+Hasil Bobot  : [0.000816, 0.0016, 0.04, 0.004444, 0.000816]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="d-hitung-bobot-nilai">
+<h2>D. Hitung bobot × nilai<a class="headerlink" href="#d-hitung-bobot-nilai" title="Link to this heading">#</a></h2>
+<p>Setelah nilai bobot didapat, langkah selanjutnya adalah mengalikan bobot tersebut dengan jumlah tiket terjual dari masing-masing data.</p>
+<div class="math notranslate nohighlight">
+\[0.000816 \times 500 = 0.408163$$$$0.0016 \times 420 = 0.672$$$$0.04 \times 300 = 12$$$$0.004444 \times 210 = 0.933333$$$$0.000816 \times 100 = 0.081633\]</div>
+<p>Data yang memiliki bobot besar akan menyumbangkan angka yang lebih signifikan terhadap hasil prediksi. Sebaliknya, data yang jauh hanya akan memberikan kontribusi nilai yang kecil.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Data dari tabel</span>
+<span class="n">bobot</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.000816</span><span class="p">,</span> <span class="mf">0.0016</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">,</span> <span class="mf">0.004444</span><span class="p">,</span> <span class="mf">0.000816</span><span class="p">]</span>
+<span class="n">tiket</span> <span class="o">=</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">420</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+
+<span class="n">bobot_nilai</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># 3. Hitung dan tampilkan</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tiket</span><span class="p">)):</span>
+    <span class="n">hasil</span> <span class="o">=</span> <span class="n">bobot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">tiket</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">bobot_nilai</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hasil</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bobot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> * </span><span class="si">{</span><span class="n">tiket</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">hasil</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">BOBOT x NILAI&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">bobot_nilai</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.000816 * 500 = 0.408
+0.0016 * 420 = 0.672
+0.04 * 300 = 12.0
+0.004444 * 210 = 0.93324
+0.000816 * 100 = 0.0816
+
+BOBOT x NILAI
+[0.408, 0.672, 12.0, 0.93324, 0.0816]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="e-hitung-nilai-pembilang">
+<h2>E. Hitung nilai Pembilang<a class="headerlink" href="#e-hitung-nilai-pembilang" title="Link to this heading">#</a></h2>
+<p>Pada tahap ini, merupakan proses menjumlahkan seluruh hasil perkalian antara bobot dan jumlah tiket yang telah dihitung sebelumnya.</p>
+<div class="math notranslate nohighlight">
+\[Pembilang = 0.408163 + 0.672 + 12 + 0.933333 + 0,081633$$$$Pembilang = 14.09513\]</div>
+<p>Pembilang merupakan total nilai terbobot yang akan digunakan sebagai angka utama dalam menentukan estimasi akhir.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Data</span>
+<span class="n">ID</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="n">tiket_terjual</span> <span class="o">=</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">420</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+<span class="n">kuadrat</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1225</span><span class="p">,</span> <span class="mi">625</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">225</span><span class="p">,</span> <span class="mi">1225</span><span class="p">]</span>
+
+<span class="c1"># List untuk menampung hasil b x Tiket Terjual</span>
+<span class="n">bobot_tiket</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># 2. Proses hitung perkalian</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tiket_terjual</span><span class="p">)):</span>
+    <span class="c1"># Bobot adalah 1 dibagi kuadrat</span>
+    <span class="n">bobot</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">kuadrat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">hasil</span> <span class="o">=</span> <span class="n">bobot</span> <span class="o">*</span> <span class="n">tiket_terjual</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">bobot_tiket</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hasil</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ID </span><span class="si">{</span><span class="n">ID</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">: (</span><span class="si">{</span><span class="n">bobot</span><span class="si">:</span><span class="s2">.7f</span><span class="si">}</span><span class="s2">) * </span><span class="si">{</span><span class="n">tiket_terjual</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">hasil</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">total_pembilang</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">bobot_tiket</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;HASIL AKUMULASI PEMBILANG:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">total_pembilang</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ID 1: (0.0008163) * 500 = 0.408163
+ID 2: (0.0016000) * 420 = 0.672000
+ID 3: (0.0400000) * 300 = 12.000000
+ID 4: (0.0044444) * 210 = 0.933333
+ID 5: (0.0008163) * 100 = 0.081633
+HASIL AKUMULASI PEMBILANG:
+14.09513
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="f-hitung-nilai-penyebut">
+<h2>F. Hitung Nilai Penyebut<a class="headerlink" href="#f-hitung-nilai-penyebut" title="Link to this heading">#</a></h2>
+<p>Tahap ini dilakukan dengan menjumlahkan seluruh nilai bobot (<span class="math notranslate nohighlight">\(w\)</span>) yang telah diperoleh untuk digunakan sebagai pembagi pada langkah akhir.</p>
+<div class="math notranslate nohighlight">
+\[Penyebut = 0,000816 + 0,0016 + 0,04 + 0,004444 + 0,000816$$$$Penyebut = 0,047677\]</div>
+<p>Penyebut ini merepresentasikan total kontribusi dari seluruh tetangga terdekat yang digunakan dalam perhitungan. Nilai ini sangat penting untuk menormalisasi hasil prediksi agar angka akhirnya tetap berada dalam skala yang logis (rata-rata terbobot). Dengan membagi pembilang menggunakan total penyebut ini, maka akan mendapatkan estimasi jumlah tiket terjual yang paling mendekati kenyataan berdasarkan kedekatan harga.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># data</span>
+<span class="n">kuadrat</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1225</span><span class="p">,</span> <span class="mi">625</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">225</span><span class="p">,</span> <span class="mi">1225</span><span class="p">]</span>
+
+<span class="n">hasil_bobot</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kuadrat</span><span class="p">:</span>
+    <span class="n">hasil_bobot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">k</span><span class="p">)</span>
+
+<span class="n">total_penyebut</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">hasil_bobot</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NILAI TOTAL PENYEBUT:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">total_penyebut</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>NILAI TOTAL PENYEBUT:
+0.047677
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="g-estimasi-nilai">
+<h2>G. Estimasi Nilai<a class="headerlink" href="#g-estimasi-nilai" title="Link to this heading">#</a></h2>
+<p>Hasil akhir didapatkan dengan membagi total pembilang (nilai terbobot) dengan total penyebut (akumulasi bobot):</p>
+<div class="math notranslate nohighlight">
+\[\text{Estimasi} = \frac{\text{Total Pembilang}}{\text{Total Penyebut}}$$$$\text{Estimasi} = \frac{14,09513}{0,047677}$$$$\text{Estimasi} = 295,6373\]</div>
+<p>Hasil akhir menunjukkan bahwa pada target harga 45, estimasi tiket yang terjual adalah sebanyak 295,6373 (atau dapat dibulatkan menjadi 296 tiket).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Ambil data asli (tanpa pembulatan manual)</span>
+<span class="n">kuadrat</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1225</span><span class="p">,</span> <span class="mi">625</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">225</span><span class="p">,</span> <span class="mi">1225</span><span class="p">]</span>
+<span class="n">tiket</span> <span class="o">=</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">420</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+
+<span class="c1"># 2. Hitung Pembilang dan Penyebut secara otomatis</span>
+<span class="n">hasil_bobot</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kuadrat</span><span class="p">]</span>
+<span class="n">hasil_kali</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="o">/</span><span class="n">kuadrat</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="n">tiket</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tiket</span><span class="p">))]</span>
+
+<span class="n">pembilang_akurat</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">hasil_kali</span><span class="p">)</span>
+<span class="n">penyebut_akurat</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">hasil_bobot</span><span class="p">)</span>
+
+<span class="c1"># 3. Hitung Estimasi Final</span>
+<span class="n">estimasi_final</span> <span class="o">=</span> <span class="n">pembilang_akurat</span> <span class="o">/</span> <span class="n">penyebut_akurat</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total Pembilang : </span><span class="si">{</span><span class="n">pembilang_akurat</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total Penyebut  : </span><span class="si">{</span><span class="n">penyebut_akurat</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ESTIMASI NILAI  : </span><span class="si">{</span><span class="n">estimasi_final</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total Pembilang : 14.095129
+Total Penyebut  : 0.047677
+ESTIMASI NILAI  : 295.6373
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="normalisasi-data">
+<h2>Normalisasi Data<a class="headerlink" href="#normalisasi-data" title="Link to this heading">#</a></h2>
+<p>Normalisasi data adalah proses transformasi untuk menyamakan skala nilai pada setiap variabel dalam sebuah dataset. Tujuannya adalah agar semua atribut berada dalam rentang yang seragam tanpa menghilangkan pola distribusi data aslinya.</p>
+<p>Dalam algoritma yang menggunakan perhitungan jarak, seperti Weighted K-Nearest Neighbor (WKNN), normalisasi sangat wajib dilakukan. Tanpa proses ini, variabel dengan angka yang besar (misalnya: Harga Tiket) akan mendominasi hasil perhitungan dibandingkan variabel dengan angka kecil (misalnya: Harga Diskon). Dengan normalisasi, kita memastikan setiap fitur memberikan kontribusi yang adil dan seimbang dalam menentukan hasil prediksi (menghindari bias).</p>
+<p><em>Hasil ujicoba excel</em></p>
+<p><img alt="image.png" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAxUAAAHQCAYAAADXp0ckAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAGZ/SURBVHhe7d19kDPZXdj7n5L/QuwyBcHEdjzP+kpTZBizrMnDBg3X4OAFjyakBmcsh3LBLC7QQABLe+3HifH4xomHl/ghsWReR3E5fi7lS1YLeAA/kkEEhw0jB5Ls2teDmBop3pFfSDllypM1L/knq3tO67TU0nS3WurWSGp9P7vnmX6RuvucPt06v+7TUuLq6qorDp///OflhS98oRmLlzjnbRFQvtHhOIwv9u1y4vwWDcpxOnEutyeffFIefPBBMxYvn/jEJ+SVr3ylGYsXtzr5V8zfvueee84MxU+c87YIKN/ocBzGF/t2OXF+iwblOJ04l9v//t//2wzFT5zz5lYnr92p+NznPicvfvGLzVi8xDlvi4DyjQ7HYXyxb5cT57doUI7TiXO5PfSurBmKp6ffUTFD8eJWJxPn5+ddRezUbDbNLAAAAGB23vqf/o0Ziqd3/90fMEPxd+1ORb1el9O/8j4ztji+sfsj8o/+4d83Y5P7d7/6YfnDxM+aMYyifKMTRVn+1WRLsg8+ZqbEy8984rvMEOLoRx/8kBmKl0fefGqGgPmo/6stMxQ3CfMXy2cohLj+TMVC66qNnzZhPLdyC5owzK2MgiYAAIAls1RBhVv7K2jCeG7lFjRhmFsZBU0AAADLZsmCisGzH5MmjOdWbkEThrmVUdAEAACwbLhTscxe8s/kPa/9iLzxJWZ81Lj5I9zKLWgKzbmtE273jQq4bW5lFDQBAAB4aZdEtlRaNDcbVDgbZM//PvmnaliP99Mj3ycv6r3SVTfEfxMx2/ZPN15mJoi8aON9ahvfJ5nnmwk3YYoyCsNZXpP+F4hbfqwUTbm+4mG1LLfymfF63TjLZtL/MG9/Jr/3vSfypq//j/J7nzGT+j4vj3+9nvdxsb8nr3mkxo8+b8YmNdm6gEXzF0//oPzOv/7m4VT/T2bueH9aH7zvvzz9WTMVmL3Slkgi4UgHZsaUaur945Zhr7PUNhMcDsx21Mz4Mpr7nYrPn/9jeezXXqPSXfnk814vd3wazc91u0Ppp9790/304z/xU/LOf/4uedvbD+XNb7lz7bXLzLOMPvvPrenvj+g8PFpmkZfvs/9WfsrKxz+W+pfU+Jcel7vW+PdLtRltXob4rffZ3ksCC1jmo+UTeVlixr5CtvZEnnryz8y48fv/XU6/7ivkATOqbRzuynsPw/zSbfB1AYvmrz30i/Lq/+v3Tfp3sv43RV6c+rtm7hiX75anv/AmSZv3P/CF/1f+1MwCbkKxNeglUDxTjXrV6Hdp7weyfayWo9I4uZxI5b4ZsalIopwWUf8vtQXq/vTv5f1/+DER1Wh+jUfXEnvH2+nOW95s/Vrh//rLv5Q/+/M/ky996Vn50rPPyrvf/e5rr43Wt8kbnVe8+4FQb/obH+7dkend6XiZZB5xvLb/eq9l+Bkpo6GuOMPrudY9x75a//C39cbNe+2kjZbZjZavV7ei0e0euevgLOPv0b/BooMut+X4cV2m5rI/zWut5Y9uszXe+zrm0fKZX13FtL76W9URebftuEvwZ/J75S/JP8wNH6lf+OB/lPd80A4I9N2Fj8vvqWlvsu4ynMjjv29m+Qi2LvvOhZ0cdzd+/+Pypu/9b/IFa0Tf/XC78wHM1l88fSQXX/nT8rdvmQkT+opH3qpCbEMFHIO7Hz8on75ym/7N8seXZrp8Vj79yz8of1zv3Tmx73oM3UmZ4A4KVk/+VDX4G+pUbG4V6C5Grncx1Pz+dJXsuw5BuyRt7Kp/CsN3JEpHKqg5NCOGfedidD2LbLGeqXj20+pjU+Srnj/oduTUfa57Lf2TO3fkf/2vv5Rn/+f/VOlZKb6n6Pq6abzwa36+39C88zWOVurzn5GPWFe6VXIJhF6uGre/pOb9VPNTqqH5PfLI8z5mjT/2O4+r/H1W6n/wb+VPxizDk0cZvWjjxwbrUWn4SrpqHL/69fJCfYX+D/59r2H8jd/UvwNy97z3Yrdym2X5juey3Wr8f/yhKTdVnqL20Rtf8imp1l8jv/Q59RZzFyLwHQ/PZZr5ytD+DMitjOZblpjY2gvlFV93KZ+0g4LPfF6eUqH/166ZcU+X8qvPrMt7P74r7/3ZW3L6IwG6LwVa1wvl9XqZdvrZ58mvvt0EEt/89fKD65+UX1LBzRc++LQ89R0Pybf8LetNwM1Qjf3GR18mDz0S8C6Fduut8tBXvlcajiCg5z/JH//ap2T9jfYdkF+Ul75ATb6qyH9xTn/jm+TPf80RcMiZfE4eteb9nYfUSVy9vnn+9/p3Qh6StziCEOC63ZyqRRdqQDXg9ysiLXOxr6omHZgo4CAzfIcjn+xNDywlkk2LnNhRhVqX/s3tHTXd6dgs30pqAwr7099FuSmxeFD7Xf/iyLrq+/M//wuu83WaxqDb0aDhbXn2AXmNCTbeoxrnoz5//kuqQeDi+S9VzQJjzDIm9SfP6suS3yTfo5Y3epX+5d94R14uKuCoq2BGjb/oJVtqOz4r/99ne43kP/ls70ed3MpNp1mV7zij222X38u/0ZSbDjjUuFcQGkiAZXruTx9uZaTTvMoS0/jr8i05FRT8h97zEs17n5QX5f4P+UprzM8t+UG7O9Q3/00J9nNVwdal74r071T8yHDraOPwm+RFd39H/sXd58l3vOGvm6nATdBBwG/Ii187uNPgvEPg96zEVzyiG/z/Tr7q/B+p15oA4fJJ+dzf/HvylTqQcLq6lKuXP9oLMLQXZOWBl5/J/3jGXv6mrN8eBDV/8czvytV/7wUtejue/qTIn38x6BUnrKrNddV4vy/SaKj2v7lLkCmbYEMFArqb0s6kgcSI/KFazklvuHZXrVONjy5y6E6JCmSWwWIFFaaB9z+edb8iPNr33Jn+zfve7zrdTlF6xcOmsasDDn2XwY91Z6HX2NfBw+fPf8Lqxz/RMpy8ysjq6997ZkA3kJ0PmX/yXN8hUdtgdyHy4FZudrrJ8rV5bfcn7bsKJk1yB8FL1Mt0KyM7zaMsMSUdFPzKhfzeZz4vn/yVW/LybzbTZ2Hcuj7z3+SXVMDwg/adit98+fDzFp/5s17wDdywP62/RT738uFuT85nLay7Br5eIi/97t+Xh4YChOC+7Mt9lq+2y96OYNuCVXaigocN+45BbviC32neTI/Ctlq8Wpfu0qTXuavGh+g7JQWRqr3+1nI8b7FAQcW3yRv1FfsvPS4f8TindEP8Nysver5/HwPrrkD/wWD3xuq4ZQx4l9GLNv6ZZJ6vuwHdlU+q8Rc+z9HcePbfym/rrkEv/m7r2456dzVeIl9tvvlIb6PmLK9J/5uJke22u369/MU+wdHzXipfbQYDCbJML0Nd0V4mmb89uOPkLJtJ/8MieaG8fO9P5Ve/82PyJ3eSsmGmzsaYdXW+JM983fPkq8yovpvxjBkW/RzF2z8pL/rZXfm/73xJfnHqb6MCJmQ/bD1JtydD381wPhPx518wAcILbskL/vvvyhf63ZoMPf2THxh0d7qqyDOf3JQvG72jYfy1B/6eev2TPPyNQPS3N9l3IZI7qhGvGvvO5x4sKuBIN0TuR9APSXe1KqjlnRWtGGOYCiIaalvs+EbfzVCrXXhzDyoGzy3ckZd/7q48Znd1ceGMGCdNUXrqj80VdLXdd16sH5/0ZjXgzcPDvXz2uidNsowgZfQnzd+Xr361eY2+A6KfQXB46g90sPESeeTh75MXffafW9257C4/9vMibuUWNM3K0Hbrb3HSd3VefMeUh06Dr4V96nP6jk+vTEe7gHkas0xfJujp7Z+fl6/+nN6nPW5lFDRhsWzs6zsCXyGveOXsuxT5rss8N/EvTPenX5Rb/a5V+jmKX13/Jnn9N4t85RvWZetXPhboAXEgrD9t/YaIo4uRlX65In9h5vv5aw89KvJr9vv+0eAh7xdkZeNVIhfvt+eZblFq+t957csG09//Xvmy15rnLdxYy/mUPG1vl/OBb0DRjXq7i5HuYdQ9Nd2Q1D/3VGM/Y3c/Usl6UNpMd75v2geot+/07j5kVQBzjYoyqpuO7ldqkopBFl7i6upqqBlTr9fl9K/0vsFmkXxj90ck8x2vNmOTq/7W78gfJn7WjN0U/a1EPy+PPKsCAauRb8blcbnrEzzNw3KW7xzob3j6xm+yukt5PQweRVn+1WRLsg8+ZqbEy8984rvMEOLoRx/8kBmKl0fe3Hv2DJiX+r8K9oTW8lGtZiyp4SuhsXhQO0iaj09J9Y+dV8FVQPE88+1P5hWLxK3cgqZVYP0AovVQ/cfk42O6/bqVUdAEAACwbJbqTkVYK3ElfUqUb3SiKEvuVGBZcacCmA3uVGDxDF8JTZyfn3cVsVOz2ZTnUvxqEjBvD7/gtWYoXn7jqmCGEEf/4AVFMxQv3//eyb+VCIjS+94Uz2+uWlub8tcSMXedzvBXm7veqXj41Q+aMQDz8LHOh2N7p6LT6agPkbG/IBdbcc4/ecM4lON0OLaW06rlbameqQAAAACweAgqAAAAAIRCUAEAAAAgFIIKAIidmhwkDq7/GiwAFxwvWGaLU3/nG1TU3yEv/fJ1eVvdjK86r/Iw0+30Xb/QMTMwrCPv//ZBOVnpsSfNPMWvHCnjJdKW0tbW8K+YtkuyFfdGgZXHhCSupV5Z1A7U8MG0JeBSppiDFa3bs8DxEmMrcJwsaf2dW1Dx0cdU4636iNx71ExYcd7l8aS8LXsh73zqQj79RZWeervIj71V3v+MmY1r3lAxZaXTe15ppvqVI2WMJZDMy6n56u9WMS3pYst8Ffip5JMi28dq+HjbvBhYcRwvWGZLWn/nFlS86j3OBh88y6Nelw8++sPyxgfM+AP78qZHn5bf/AhX0ifiV46UcczoW8HXr+z09K7QHBxsWfO2zAzrqo/zPVsl9Uq/5Syedmmrn59hvXzYF7X06/p5sibqMklJodGQQkpNs/KOxbSadXsWOF7iLP7HyaLWX56pWHCX7QszNPDA+kNmCG4+mB10Y7K7kvmVI2W8jMwJ0T5Zpgpqim1bjs0VHitVN6Ww7zxxNqQsh9a8U33Jp12So7OitKzXVyUnaSney0ty7HKWgf6AyYhUu2Jd1FJ53a9kTV67UpWM+vBJSv60JcW0yndLTT/Vecf8ULfnh+NleXCcXDf/+ktQgRhZkzf+tunCpFPl9SrAeId81MxFnJgTon2ybxXVlIGhqzOZsplqU++9E+y2sf9yFl1ZMs4PGKV9vyKNRkFSJk86S2cXNCUXC3V7PjhelgvHybDFqL8EFUvomYunzRB8PfKIvEEu5BmPZyP8ypEyXmL66kxhU51b3T9srkmuy2b/xJuRs+I9q8/qxMtZODmpVnNSzow8vJirDj6IVbKu1GE5ULdniOMlNlbyOFmM+ktQseBuvSYj3/CBnxs8NPzMPXnvBx6S73xNPH/2PVL6WQlZlwce8C9HyjhmWk1ppDckZUZrd523xV3UTtSHiP0QnOOkO+lyFtH2sbSKZ5Ix/WaTO1lJl0+GP3SwPKjbs8XxEg+repwsQP2dW1BhfdvRl6/L/gfsPvCvX+lv2/Esjwf25UOVdXnnK3rzX/qKH5evqTw+eKgYDk/K28yzFFbKitz74rvkVXqWXzlSxvGiTqzVTcctX8mp/3ykNkQKKeu1drKeZ5t0OQsqmT+18rGvH+pL5uWe/tDp59V+8DAp6vNnJg/uIULU7ZnjeImBFT5O5l1/E1dXV10zbKnX6/Lwqx80YwDm4WOdD0v2wcfMWLx0Oh1ZW1ucu0D6Wz+ONlqDq1O1A0mc7M7s6/oWLf9RIm+L5abrdhBxriOzxLE1O7M8TlZtv9H9CcBK275THL5KpZ91m2OjC4gKdRsYj+MkOgQVAFab40eGeulY+DhBLFC3gfE4TiKTOD8/V2U4KMxmsynPpT5jZgOYl4df8FozBAAAsNhcn6nY29szY/FCX87ZonyjU/nEe3imIqZWrY9tXHB+iwblOB2OreW0anmj+xMAAACAUAgqAAAAAIRCUAEAAAAgFIIKAAAAAKHML6jQPy5ifycwv0jpXx7OeSpt9X4SET7apS2rrKxfxbRRxqttFfexyfPQcYD5CLIv/M5RxthzW/9Xc3vs17vN83vf8DyX4yVIfqYVYNne+WpLaWuw3VYaWZD+sbPB/AMZmjtm3a7lr3guc0w5+m4Lpjeu/jrNsi7PQqC8jT8OZmFOQUVNDo42pGV9jW1LimJ+Unxl+ZWHmpc5k2LLfO1vS/9Iy/7wyR/D2iXZr2SlOPR7+pTxalu9fWw1Vk52pTp0HGAegu0Lv3OU4XZuU9O29I91We9TqbophZTdOK3JXfX63jK7YlX7u6ZhMeZ9fsfLLOtW0LLyzJeRq5pt18nxQ2Z6+RmpDuY5fpNg7LpdP1v8ljm+HL22BWEEP98Hq2+LZLLPMq/jYGb0V8o60xNPPKHWfbNaxXQ3rUpo1i4vL83QYhsqj2quq2uFk6r8N1Jek1qM8m11i+l0VxePLqeRoutb9DJ+/OP/2gzFz1zqyQLt45vOv99xELVlOcdOI4q8TbIvrn8uup/b9OuG63a1m5Pe60Y567zv+wIeL9PUraDlOMmyh7dNl5PXe3Uec+pff+7r9vps8VmmbzkG2xYbx9YEpjjfu+/z8OaXN7/jIBpueVuAZyracr/SkM31pBlfdcPl0b44s/46pTbSZgij2qV9qWTvSd63OlHGq4Z9jOVy/XPR69yWXN8UKZ/I4Dp9SjbSDWm2emPObkL6qvipWYDf+5bhePHKl62c6c3Tqd/ro30hZ+kzOTLTrRSwS4jnZ4vPMn3LMcS2wF+cz/eT5s31OJihuQcV+kAtbFblJu7KLAPKIwR9a7qwKYf+EQVlDGBmnI3daZ/buXaO8ju3bR9LNVeWjFlnIpGSQiMtG6ne7GT+tN/9obVxNHhWY8z7Fp1nviQp+VNHl49qTjWsHM8qNFQ52vO6VcmVM+MbW+M+W6ZZpjbt+4CxxhwHMzLXoEKffFO6XyStO0vQ8mg1G2YIQ1pNacjgQzJT7kXpzg92yhg29jFmwdnYHb16HoTrOWrMuW372NF40I1T2RS3m//J/KHkGhW5b06JQd+nLfLxMpqvIdu7Kl9ncuE2T7ZlN0hf+gCfLQP+y/Qux4DbgqnE+XwfKG++x0F05hZU6IdjUs1D6Z7mVTwFr/JI7mQlXT4aPITTLslROS3ZHUrtmu1jxwdk13rwKlcdfLBTxquLfYxl4Pm5OObc5lQ7yEg5t9t74Fd/S4zz0nftRDWN3QMH5/sW/niZIF9D85I7kk2X5cR+q8nX2LszfuXvs0zfcpx2WzBWnM/3U+fN7xiJ0lwe1G4Vu2mRrlq9IwV/YGlaC/ug07jy0A/mOObN8sGbMBatfNWJf1BWS1bGPKg9Awuyj28q/7r+O/MrHg/vRmlhz7ERCJM3732hH9Y1dXGCz0Xfc9tQxe49rOm6PN/3KT7HS5i6Na4cA5WVX77M69znKSP5niZfQ+Wv+SzTrxx93zeCY2tCnuXurEfB9/m05pe3McdBBNzyltCBhFphX71el729PTMWL51OR9bW1swYokb5RqfyifdI9sHHzFi8rHo9iXP+yRvGoRynw7G1nFYtbwvw7U8AAAAAlhlBBQAAAIBQEufn57obVP8BpGazKc+lPmNmA5iXh1/wWjMEAACw2FyfqXj41Q+aMQDz8LHOh3mmIqboP7ycVr3eRoVynA7H1nJatbzR/QkAAABAKAQVAAAAAEIhqAAAAAAQCkEFAAAAgFDmFlRc/sLr5aVfvm7S6+X9z5gZK84ul7fVzQSt/g5HWa3Ld/1Cx8zAKN965VeOlPHiqB1IIpHop61S28xwYV57UDPjI9qlrevzncvfKsnQ0j3X3ZbS1mC6leyFjrynlw7EY5NmI2iZBX0dwgu9T3zqnOa3/KF5WzKY5bfMMetTagfO+Y467rm+KQQpt5HX9FLw7Zk6H2b+SLFc255A+3BcHhCO5z4Z4Xzd6OfBogiaF2Piz70IzSmoeFKOP5SRJ794IZ9W6cmfEHnne58081bYM/fkMVUu73zUjFuelLdlL+SdT/XK6tNPvV3kx95KEObKr175lSNlvDhqcpA5k2LLfM11qyhS2HdtpFgNg5NdqebMhFHtkuxXslIcmq+Wf7QhLesrtFtSlILs9xfutu67Qx/yuaqZp9Pxdm/i9vFgmk56g3K7YubegKBlNj5/iEp0+8S1zvm9T9X7rYxI1X5PdVMKqeHGqvsye7zm6eMtI9XBvO5xr44HWF9wAcvN75gbsz3T5sP7fDN+mxfzvBFnExx/np8HiyJoXoyJP/eiNaeg4pXyk7+9L7fM2DMXT8s3rK/6V8x15P0HVfnO4315wEyx1OvywUd/WN5oT3xgX9706NPymx/hSvp1PvXKrxwp48VRO5Fy7lDySTOezMthriGV+9dPgNvH6gQ50iAaaEtpvyLZe3lZN1N6tuX4NC+9xSdlJ5u2hqKj1ntUVm2DG2waTFBmuCFz3Cft+xVpOBun27uSkzO5CLXqmpyUc1J1Od4iXd9U5TZ8zPlvz/T58DzfRLKv53DeiLPA+2TWnwcRmKh+zetzb2Ahuj/ty/vkQz+02kHF5S+8VX7zu949aNgal+0LMzTwwPpDZgijvOqVXzlSxoujfXFmhgZSG5OfANulfalk7w1OxK7acr/SkM11+0XqxNvKSiVlbhGnmnJoX8U0yhkzb/TWsq12VwpSlDs32DYIXmbj84doRLlP3Ouc9/uS65vqTSeq+WxLyUa6Ic2WGVX86rHrPHWOPEufyZGZbiUzM8j6gprq+B855ny3Zwb5CLLNi3jeiLPpPkdGPw8WwyR5me5zL1pzCypu/dDjva4mupvK+s/JS7/9nlyaeStHd3v6sXV504oHVlGgXsG6/VvYlEP/M6t1Ai5sVsV58dG6Wik5qbaKkpayZPotgKTkT83tZ52qOdVQGO3iYa42HtpXhBaPd/4Qht2HWadx/Z1HTVvnPN+3fSzVnBo325NIpKTQSMtGSs/0W+aYOt5Qx5Q9r1uVXDnTayD7rm/WXI65cdtzo/mIx3ljFbh9HiyVEJ97UZpbUOF064d+WN7wn6vyu6vah73dlv8qj8u+fYX9AyIfzHo/LKy79WC8cfXKrxwp48XRajbMUECtpmpsDRoHmXLvSqGzsacbgalKVlrOM2vtoDdNX/FN5uVU9z09Mw2OUW5dPPTVxkZOFqEHg2uZTZI/TCSZP+03HE89PtRD7xNnnRvzPqurjt2Q1Q1n2RTXC5N+XZX85sm27Dr6bAde3xR8j3+PYy749swmH57bvODnjTjzq0eunwcLzDUv037uRWw+QYX+pp3HHA9m6z7tsi4PjHT9WRmPvKt/dV2ne4+KvKFyYXXdufWajHzDB35u8NDwM/fkvR94SL7zNdzVuManXvmVI2W8OJI7WUmXjwYPobVLclROS3Zngk/2kQcgq/r5x+qgsacfuEw1D6Xb72PqpSWen0O6n+tIg6N2UpZ08c5Q15WbMH2Z+eQPocxkn7jUuQHv99UOMlL2egDYb5nOeckdyabLcmIHOyY/blfxfdc3xqTlFuSYG9qeGeRjom1eoPNGnE2yT4J/HsxH4LxE9rkXznyCike+X975R9/f7/v+0qzIvS++S15lZsPhgX35UGVd3vkKU1av+HH5msrj1569gOJXr/zKkTJeHPqqq/WtK6YLQqogm9VT00e0Jgdqmn011vo2FscVmUBfZWmdkNXfcqa3fCuZ7gi6+8NmQVL96Rk5K7bMbeLeuvvvsb4lpteH3WItNzf21vNMBC0z3/whUpHsE5865/c+VRe3HO+zvumov5P96rHfvKTk7xXlzH42wJkf3/VNaILj3/OY892e6fPheb4JsM32MofLVPHKA8IJWo+s8ld/3T4PFsUkx4SXG8xn4urqqmuGLfV6XR5+9YNmDMA8fKzzYck++JgZi5dOpyNra6t7FyjO+SdvGIdynA7H1nJatbwtxDMVAAAAAJYXQQUAAACAUBLn5+dd58MdzWZTnkt9xswGMC8Pv+C1ZggAAGCxuT5Tsbe3Z8bihb6cs0X5RqfyiffwTEVMrVof27jg/BYNynE6HFvLadXyRvcnAAAAAKEQVAAAAAAIhaACAAAAQCgEFQAAAABCmXtQ0S5tWb/uN/YXAVeA/Yud137tsHbgmJ6QrbE/G7zCnGW1VZJrJWXmX6tvlPHimHBfuJ5D/OqB5/LbUtoaTLeSvdCR9/TSyC+SmtfM5VwWqMx88ofoBdonitfrxtU5v+VPO0+Z6nNozDJDC7r8AK/zbHOY93pN7yX3X+2f6Bw0so29NJtfN15pAeqC01K1RQPmzc5TL7nX3ajNN6hol2S/kpVizoyvMH0iz0i1/9W+3f5P+dfkIHMmxZaZ3iqKFPZvpHIsH1VWRxvSssqvJUUpyL6joKwPy5NdqV6rb5Tx4phwX7ieQ/zqgdvy76qpA7mqmafTce8olO3jwTSddCXK7Zpj1K9u3YTJysw1f4hY0H3i8zrfOudXj/3W7fc+NXeizyG/9Q0fU+H45ccpwOs82hyex696/VZGpGqVhUrVTSmkRgKASc9BY84liELQOmMsVVs0+PFwV+WpVwe70jssozsqvcwxqGhLab8i2Xt5WTdTVldNTso5qbp9wNdOpJw7lHzSjCfzcphrSOW+19Gxyrbl+DQvvaJKyk42bQ3Zto/VwUUZL7aJ9oXXOcS/HoSn1ntUVu2AQV3yrFs3gfq7eILuk8D77nqd8zR1ffD5HJqnyMrSu83hdfy271ek4Wzwb+9KTs7kor/qsOegCfYrgpvoGPCuFwspcN6cdVCk1WxIeiNlxmZnbkFFu7Qvley9QcGssvaFnKXP5MhxO8vultC+OLP+OqU2om4kxVFb7lcasrk+voJRxotjkn0R7BwyWg/UibaVlUrKHGepphz2r8b2lDOD49D1VnjtrhSkKHcWpB0waf0dmz+EFnSfBN531+qcdz32X6ZP/ff5HPI/bsYfU2FEVZbTtDmS65vqgDlR4ZYtJRvphjRbvbHpzkEOC3YuiYvAx5WybG3RyfI26P6k70Ce3kAm5xNU6FtNhU05XJa9eBMaqjzMbaputyq5coYP/BD0iaKwWZVFu+iGiAQ8h7jVA+vqo+Sk2ipKWsqS6R9oScmf2segStWcaoCP9nU2VxYPB1eAlkeQ/GEazg/vyJ8n8Khz3vXYn+/7fD6H/N437ba4mUlZTtvm2D6Wak7lx2xPIpGSQiMt1gXfEOegnmU+l8REzNuiyfxp/3zf2jhyf840YvMJKlpNdQIaHKiZcu/qWfQn42W1Lbs+ffv0bSx40x9KKd2XMEREQRkvDtd9EeAc4loPage9afpKajIvp7q/85lHAH+tq4Oiryw2crLovRUC1V+3/GEqzg9vr6uBQc8p117nVucmqcdKf5kTvc/xOeT3vgm3ZZyZlGWINofVNcpsjxVoyaZYNx2mPQfZluRcEheudSYmbdEgx0Myfyi5RkXG9oIM6+rqqutMTzzxhDp2blY1J91c1YzM0OXlpRlaNK1uMe0og1axm5Z0t9gaGdZGxxfIIpSvrkv6SVQ/1+rbApbx4x//12YofnzryZT7YnSfetaDaq4r6aI64mzVrmo3uZ9/9Gslp14xoJeb9tmYa3XLReTHybT11yV/YS3uOTa8ifIWdJ8EeJ1rnfOrx37L9K3/Pp9Dfu/zXeZ1E9eRAGVkCfo6xes4HXf86vleny+j7/V7rabn+51LRnFsTWCCuuA0bv9PY25508flcIW8kfM9QcWisCqGOgmZNFQeVmXwmLdA5l6+I2XYS4ODyDrJD81zHIgLVsYrG1RonvvCu7EydA6ZsB4MPth7y3d7j8VarvtJ2bdujZjJcRKozMbkLwILfY4NaeK8Ba3HfueeCercUAPVZ5m+7/P5HPJ7n+8yR0xVR6IoSwe9vX556x+/o+cSrwUqQ8sccw7y269eOLYmFLTOOIzWiyjML2+9iwSD193M+T6hAwm1wr56vS57e3tmLF46nY6sra2ZMUSN8o1O5RPvkeyDj5mxeFn1ehLn/JM3jEM5TodjazmtWt7m+zsVAAAAAJYeQQUAAACAUBLn5+e6G1T/2w2azaY8l/qMmQ1gXh5+wWvNEAAAwGJzfabi4Vc/aMYAzMPHOh/mmYqYov/wclr1ehsVynE6HFvLadXyRvcnAAAAAKEQVAAAAAAIhaACAAAAQCgEFQAAAABCmVNQ0ZH3f/u6vPTLHemxJ828FVV/x1B5fNcvdMwMxW8erjPl9ba6GbdRxsuhdiCJRKKftkptM8Nh5DW9dCA1M9tiXnMwNHGgXdq6Pt+53K2SDK15zHbVDgbzrm1LFIKUi+aVh5H395K9nW0pbY3M8yo4DAuyX3zLXvFbxlT7Uxm3XWb+td089L4tGXqb17Zo49YXxgTLdj0OR94/NM9mXuNfHj77xm/eaFkpMz9frDq/fTNi4fdF0LyMqXP2/Fme2ud6p+INlQv59BdNes8rzdRV9KS8LXsh73zKlMVTbxf5sffJRz3nvVXe/4w1EyM++pgKCqqPyL1HzYQ+v3KkjBdHTQ4yZ1Jsma+5bhVFCvvDDRtt+7j/NdhWquZEcruybWZbHxInu6Inu2qXZL+SleLQfLXuow1pWctsSVEKst9fsdt23e1/+Oj1ZaTq2Kbj/rZEI2C5+OVhTJlpuapj/nG0OYinKOqr3zKm3Z9uyxyur67HhzoutjIi1f4yN6WQshtZPtsyZn3h+JXPMM/jcOrzhd+6/fLsV1Y+24mIRFBnFkbQvIyvc76fiRGh+9Oiq9flg4/+sLzxATP+wL686dGn5Tc/wpV0N696jwoK3AJUv3KkjBdH7UTKuUPJJ814Mi+HuYZU7rt8GvS1pXRUVm2EwUfB9rE6sXo2itXr9yuSvZeXdTOlZ1uOT/PSW3VSdrJpa2i8mpyUc1KdZSM8cLkEzcP1MsMUoqivvsuYzf70Oj7a9yvScAaa27uSkzO5sLIz7fERUuAyDnocTnC+mGr/an5ldQPni1UXeZ2Zo8B58T8+/T8TozPXoOKD2UF3k2tdVVbKK+Unn8rIb77ClMcr2vKmL75LXqXmXLYvei9xeGD9ITOEoPzKkTJeHO2LMzM0kNoY03ip3ZWCFOVOwPNlu7Qvley9wUnaVVvuVxqyuW6/SJ2wW1mppBK9W8upphzaV7RU/TlLn8mRfdtZp4jvL09VLtfy4OBRZuXMIA/0fhovivoafBmT7E+f+uojub6pKsGJamrZUrKRbkizZUb7Jjg+QgpcPkGPwwnOF/7rDprnkbK6gfPFqou8zszRVOcYv3PFjM0pqFiTN/626WqiU+X1KsB4h+nus5ouP1KV/yqvl3tPvV2+QR6X/VV/xgQIxFx1PLSv0Iyhuz0VNuXQP6KwAo/CZlWcF3asq7iSk2qrKGkpS8b54dNQy+zfPq9KrpyZe6PcLQ89bmWWlPypvf0qVXMqwKCfd/QmrK8Ok+1PNdWvvnrZPpZqTr2238hKSaGRlo2UmW9MfHxMwH7WSSe/fvCuxh6H05e/myB5dt1vC3i+WFkx3Bfe54rZW4zuT488Im+QC3lmVfuw198hr/xQRp7Udyce2JcPfbEu7/yj7/e8e/PMxdNmCGH4lSNlvDhazYYZcqGvOjZyErgXT6upGgGDRlOm3Ls672y86EZNqpKVlvOMXDvoTdNXIpN5OdV9Vs+8Pny2ZXfG/VY1v3JxzYMtSJkNdXvBJKKor6PLmHh/TlRfh1ndJJyNLNkU5wXP8MeHv2T+tL/+U4/g37eM+1yOw0nPFy766w6QZ9/91ncz54tVN3WdWUB+eQlW52ZnMYIK3add1uUBu0/7yutI6z/3hm69JiPf8IGfGzw0/Mw9ee8HHpLvfE08f/Z9VvzKkTJeHMmdrKTLR4OH0NolOSqnJbvj3rionZQlXbzj0uXAw8gDm9bzmtVB40U/zJZqHkq33zfVS0v65/XkjmTTZTmxGxNmm0ev7oYxSbmMy0OgMtP9eEcak7guivo6bhmR7E9nfZ1A7SAj5ZEHmic+PkIKXMYBjsNJzxeT7d/hPHuW1Q2cL1ZdlHVm3iapg8GPz9lJXF1ddc2wpa4a+A+/+kEzNitPytu+/PtVIGF7vdwzzxCsKv2tRfsfMCPKN/xEXT70Q6ZRq7/uNPt4b1jR35r1k4+YEQwZLUeRh+SdTz3eewjbrxwXpIxzb/pj6+/3vfm/SfbBx6zhuOl0OrK25hOw6a+907cQDN3o7110qclBwvpqmt64OrluefRj1idXxyKUtBRbp9eeo9CvO9l1Lq8gw22hnFpdb/mjy0wXW4MrqSPvHWzzdWPz7yVIuaT88+BdZr1lOJY+eM8Eps7bEvDMWwT11XMZY+qk3zL96qvn8SEj68tVBw93jtkW3+PDYao6MlEZexyHE5TV0PnCc90+eQ603zy208NKHlthRFFnIhBJ3oLkZcy537eOT8ktb3MKKgC4IaiIPxoHy2nV621UKMfpcGwtp1XLG18pCywAHUzYAQUAAMCyIagAAAAAEEri/Py863xwsdlsynOpz5jZAObl4Re81gwBAAAsNtdnKvb29sxYvNCXc7Yo3+jQxzS+2LfLifNbNCjH6XBsLadVyxvdnwAAAACEQlABAAAAIBSCCgArSf+iNgAAiAZBBYCVooMJAgoAAKJFUAFgpdjfdBd7+ldYTQCl01apbWYgcqasD2pm3Ee7tHX9tT77yn59L23J6G7Uv5Q7mH8gvcW2pbTlnK6Sc4Ve6xuZ3kv2Msdsy6zrW9gyNiYtf7954/bNuG32206EFLQ+Bn3dIplkm8fUwagRVABA7NTkIHMmxZb5uvBWUaSwf73Rg9CsRv3JrlRzZoKfdkn2K1kpDr3WbV/dNQ35mtxVr2+ZQLg3a9A60OvOSLUfKHe7x7Jt5mm5qj1dpWN7jk/d2D4evF4nnancrlmm37b45SG88GVsBC5/+1jxnzdu3/hus992IiS//eY023o7G0HzFqAOzgBBBQDETe1EyrlDySfNeDIvh7mGVO67fPIglO1j9cHeb7D7aUtpvyLZe3lZN1PG25bj07zYu7HVbEh6I2XGanJSzkk10LodAtcNtb1HZRVT2Mv325bZiqaMPeb5lYdvWfmXh/82T1MXEFicz38T5C34cRMdggoAiJn2xZkZGkhtpM0Q5qFd2pdK9t6gMdCnGqetrFRSva4MiVRTDh13HJxdbPRdiVN7Ae0LOUufyZGZZ6WRPg7lzGCePStw3ajdlYIU5Y6jTeK5LWPycFO8y9h7nl95jCsr7/Lw57edCC/4+W8x6u0kFv3cTlABAMAs6a4uhU059GhFtu9XpCE5qbaKkpayZBzBQTJ/2uvmoLvYbBxJYqsk/WuSDbVMM6/brUqunDHBQ1Lyp/Z0lao5FWAMno0Yz9ylOBxcidf8tsUvD5NwNtQn6t/uV8Zjyn9avvvGy4y2BdOJqt6ih6ACAFaA7p6BOWk1VcNFNVjsq9rl3l0Eq9FcO5CU1Tf/WLaTeTnttqR4ZgcHw5L5Q8k1KuLei2Nbdr36Tm/vqmbTmVx4tHiv1Q19l6KRk37PJxdD2zJBHsZxNtSDXvm3+JWx3zwXfseK1zz/feMw4bYgGq77LcJ6O0+LdG4nqACAmEnuZCVdPho8vNcuyVE5Ldkdro7OxcgD0Nbzz1WvRnNL+m0E/c0tzhaO7k8tm7Ku35bckWy6LCf2bLOPXR9zcLwvSN2onZQlXbwz3A3Eb1uuceThpviVsc88v/LwLauJysNhorqAaUx//ptDvZ3Qwp/br66uus70xBNPqHoeT5eXl2YIs0D5RifOZbnq9eTG8l/N6e/N7SfVcJm5Vay3qlE4VM4i6W6xZc3pqvaia7nr9zinjy4j3VuA0uoW0855ObVUh1axm3a8b7DM3ro93+dXN6xljrze4r8t3nkYNk0diaKMna7N8ysPz3mTlcdgm4f5bafTKh5boXjut+E6M7qfvOrttBYpb151cFpueUvoQEKtrK9er8ve3p4Zi5dOpyNra2tmDFGjfKMT57Jc9XrCvl1OnN+iQTlOh2NrOa1a3uj+BAAAACAUggoAAAAAoSTOz891N6j+Q0PNZlNu375tZgMAAACAP56pQGQo3+jQxzS+2LfLifNbNCjH6XBsLadVyxvdnwAAAACEQlABAAAAIBSCCgAAAAChEFQAAAAACIWgAgAAAEAoBBUAAAAAQiGoAAAAABAKQQUAAACAUAgqAAAAAIRCUAEAAAAgFIIKAAAAAKEQVAAAAAAIhaACAAAAQCgEFQAAAABCIagAAAAAEEri/Py8q4idms2m3L5928wGAAAAAH+Jq6urrhm21Ot12dvbM2Px0ul0ZG1tzYwhapRvdOJclqteT9i3y4nzWzQox+lwbC2nVcsb3Z8AAAAAhEJQAQAAACAUggoAAAAAoRBUAAAAAAiFoAIAAABAKAQVAAAAAEIhqAAAAAAQCkEFAAAAgFAIKgAAAACEQlABAAAAIBSCCgAAAAChEFQAAAAACIWgAgAAAEAoBBUAAAAAQiGoAAAAABBK4vz8vKuInZrNpuz9jdeZ2QDmpXPr0gwBAAAstsTV1VXXDFvq9TpBBbAIvmXo0IyNTqcja2trZmz1xDn/5A3jUI7T4dhaTquWN7o/AQAAAAiFoAIAAABAKAQVAAAAAEIhqABCav+KyJZKAAAAq2psUFH6YZHEt6q/nzMTHA7UdD2vZsZrP63GVZrGJOtZZLqBqbd1KE1ZJhjUi6jKMkwdBQAAgLtAdypyf1+k8jEzYvsDkfLXiqTNqLb9FpGuStMKup5FltxTZfAfBqmotj33f5qZmErxg47yfEYFBSrQaJt5kwpbRwEAAHBdoKBiQzeKf3b4TkHp/1ENvO81I8ZoNxB9h6HkuHJ/oAIEP0HXY9+5sFP/7oZavrPBqa9yu935uCm6PAoPiBw/bCaMGL0K38+3zodj+lD+HNOd5amXdaCvwqvp9j4YumsSk6vz+Z9TQdofidw1effMo0cZXqujuo6YctNJ7wO7fo3WZfs1Os2zXgEAACyaYM9UvEQk+7UiJ3YjVjWoKurPjpo+TuHSXGX+lyLlfzIcMFwTcD3H5qq1vdzCT5hAQjXeq6oRv68ag7rxWHmVaoS+2HrLzVN5SKkAqep1VVzN1wFHPx8qbZtZB6qcnFfnrTyosthyTld/z9S4s3FbVknPO91TA2r6/kdFWmYZVTVpXFC3LHb/vsr7Z9SATx5dy9CNClAqt8z71XIzKmDY0O9TyRngetY5AAAABH9QO/+9qtH6H3vDtV8W2VTjyd6or36jWjX4c2bQeXV59AHXIOsZujqtGo9OunvLpmoM6gb9oW5cz4lu1OZU49MOFK7lWZfHh3vjQ4GWahTr7l47o43gz4o0VKO33zhWfw9HuosVv9sMKG01vaEazCmzzoxal9UQj4nNv+WTR68y9GDXk5QKLsQuY5V0gHthgja/OgcAALDqAgcVdiNYXxk/UX93Pbr0BOF87sC6qu40bj366rS+A2BfNf7gyPMWav6ZGZwX/TBwWTVOnd2e3PJsX/0+MY1V37s4HnTj2pPaBnudzvUuO10vNuy7VzeRx3F1DgAAYMUFDyoU3e2k8AbVaP+RwRX4WfBdj75i/7UiKTOq72Y0zLBW+gnV0P6XIi313sw8niP4A7XeZ9T6J3gYWAcX+oFuq9uXaiyn/0jkvmrIDtHTTbBlUX+PnI3rEclv6r1+mkBlkVkBm7kL4ZlHrzKc1pg6BwAAsOomCiq2v1s11tTfrGrMzZLveh4W67mJfpcXNcnZrcp+MFrfGdB3PG76OYKa7rrl6JJjJcfD47ah7jQq9R/oVo3leyog0kGVPc8KJNT0U92X356u/urgyfNZAbMc/YzA0HKWkLMs9P7u/pzav3qGVx69ynBaPnUOAAAAqo10dXXVNcOWer0ue3/jdWYMwNx8y9ChGRudTkfW1tbM2OqJc/7JG8ahHKfDsbWcVi1vE92pAAAAAIBRBBUAAAAAQkmcn593FbFTs9mk+xOwADq3Ls0QAADAYnN/pmIvJt89OoK+nLNF+UaHPqbxxb5dTpzfokE5TodjazmtWt7o/gQAAAAgFIIKAAAAAKEQVAAAAAAIhaACAAAAQCjzCypqB5JIJPppqzT6m9MLwGzjQc2Mu3HmY6t07ZeztXZp6/pyhvK/Jc7s2693m+f3Pt8yDTzPucy2lLYG77GSb2EsEL/8jjKvXZasAQAALJo5BRU1OcicSbFlvsq2VRQp7A83kOesdqAaoye7Us2ZCa5UPo42pGV9HW9LilKQ/dFMtEuyX8lK0bkcNW0rI1K1v8q3uimF1IFamlaTu+r1vWV2xSqau6a1O+Z93mXqM893mT25qpmn0/G2mbrIgtevYPsZAAAAfuYTVNROpJw7lHzSjCfzcphrSOX+4kQV28dBGtDbcnyal142krKTTVtDA20p7Vckey8v62aK1r5fkUZuV73b2N6VnJzJhZV95zJFWs2GpDdS1rDv+/zK1Gee/7YsqQnqV7D9DAAAAD9zCSraF2dmaCC1MdogXzZtuV9pyOa63ZJVU0r7UsneGzRujeT6pkj5xHE3ICUb6YY0W70xZ/enjFTl1CzA731+Zeo3b9y2aOXMoBvRMnQRimf9AgAAWFw8qK04G/HTPtuhA4jCZlX6F711t6fCphyORhTa9rFUc2XJmHUmEikpNNJibkhIMn/a727U2jgaPKsx5n1T8V1mUvKnpguRTtWcCjCGu0YBAAAACxNU6G4+8+JsxNt3BSahg5KUfg7C2Y2m1ZSGDBrrmXLvir8dtFjdbuzGercqOdkUx02OvmT+UHKNitg9d4K+T/MrU+e8wMtc4q5R86xfAAAAcTeXoCK5k5V0+Wjw4Gy7JEfltGR3Jm/Qz5t+0DfVPJSu4zkIy/axo6HetR4E1g88uwUttYOMlO3nGvQ3ETn7GOnnAzwa+c73+ZXpJOU9tC2jfLZlkcSpfgEAACyD+dypSObl1PqWIdPlJlWQzerptWcP5sn6ViDHHYbBV63W5EBNt9r9VmNV/S1nevmwUoDuQep9W/3X956b6D8svH1HimeO5VnfzHTca+T7vc+vTP3m+S3T5NWeN7Qti8y3fjn2nx7z3M8AAAAIKnF1ddU1w5Z6vS57e3tmLF46nY6sra2ZMUSN8o1OnMty1esJ+3Y5cX6LBuU4HY6t5bRqeeNBbQAAAAChEFQAAAAACCVxfn7edT5Q3Gw25fbt22Y2AAAAAPjjmQpEhvKNDn1M44t9u5w4v0WDcpwOx9ZyWrW80f0JAAAAQCgEFQAAAABCIagAAAAAEApBBQAAAIBQJgsqageDX1dWacvvp4fNa+1fLh7VLm1dn+9c/lZJhpY+Zt32LyP3UoBftZ5U0Lx7vq4tpa3BdCs5M++3/KF5zl989lvmmPUpnmXmub4lMs3+Gq1zAAAACGSCoKImB5kzKbbM18+2iiKFfdcGp9VYPdmVas5MGNUuyX4lK8Wh+Wr5RxvSsr7atiVFKch+f+Fu677bbwTr9WWk2v9a3G73WLbNvGgEzbv/dmq5qpmn07G9lT7vU2W1lRGp2u+pbkohNRw0uS+zx2ueZ5kFWN/im2B/edY5AAAABBU8qKidSDl3KPmkGU/m5TDXkMr9642w7WPVSBtp3A60pbRfkey9vKybKT3bcnyal97ik7KTTVtD49XkpJyTquf6IjBB3qPWvl+RRm53ECRt70pOzuQi1Kq9y2w267thgffXtHUOAAAAToGDivbFmRkaSG1M3ghrl/alkr03aPC5asv9SkM21+0XqcZfKyuVlOmmkmrKYf/K+oWcpc/kyO7CopNXn6spBc+7z3Ya5cxgOweb6f2+5PqmetOJ405BSjbSDWm2zKjivswe13k+ZRZkfYtuuro6WucAAAAQ1M0+qK27PRU25dA/orACj8JmVZwX0q0r6JKTaqsoaSlLxtl6bqhl2t11ulXJlTOez3IEYT/voZNnX3wP3tuZlPypvY0qVXOqwT/oVuT5vu1jqebUeD8ASEmhkZaNlJ7pt0z/9XmWme/64sutzgEAACCYUEFFq9kwQwG1mqrhPGiwZsq9K+nOhrtu0KcqWWk5W3e1g940ffU+mZdT3f/9zCtw2JZdr2c5AkrmT/uN8VOPAMg175Nsp7Nb0Zj3Wd3JnAGAbIrrBXW/rkq+3ZiGyyzw+paIX111rXMAAAAILHBQkdzJSrp8NHjYtV2So3JasjsTtDa3jx2N1a71ILd+kNhuuOuHh1PNQ+n2+7l7aUm/jZjckWy6LCd2w91sV5RX1qfPu2M7R+l+/56Nde/31Q4yUnY+8+Dkt0znvAnKzHd9C2qS/RW8zgEAAMDT1dVV15meeOIJ1d73UM111Vv6SQUERrWr4oP+uAoWhl4nku4WW715Tvp1/WW0it300Ht0yqkl94wuM+1c4Mh7B9s17PLy0gxNYcq8D7az97rBvEHeNM/3jZbLUOb8lum/Ps8y812fv1DlG7Ug+2tMnZunhSrLiMU5b0Gwb5fTqtfbqFCO0+HYWk6rlreEDiRUY6qvXq/L3t6eGYuXTqcja2trZgxRo3yjE+eyXPV6wr5dTpzfokE5TodjazmtWt5u9kFtAAAAALFDUAEAAAAglMT5+bnuBtV/eLrZbMrt27fNbAAAAADwxzMViAzlGx36mMYX+3Y5cX6LBuU4HY6t5bRqeaP7EwAAAIBQCCoAAAAAhEJQAQAAACAUggoAAAAAoUwWVNQOJJFI9NNWqW1muGuXtqzXHdTMBM25jK2SDC3Bc/ltKW0NplvJXujIe3rpQJyrnErQvHq9btx2+S1/2nlK7WAwL5L1aWb+0H5cdOPyNMK1rgIAACCQCYKKmhxkzqTYMl8/2yqKFPbFs63WLsl+JSvFnBm3qGUcbUjL+vralhSlIPv9Bbgt/+6gUazkqmaeTsfbvYnbx4NpOlXVCnO7YuZOKWhefV7nu11+efVbt38Z6YAiI9XBOrvHU65veJmJk13Rm788/MrQhWtdBQAAQFDBg4raiZRzh5JPmvFkXg5zDancd2uptaW0X5Hsvbysmyk923J8mpfeIpKyk01bQ9FR6z0qq7Z7uJAicF4Dl8kE2zVROTvV5KSck6odbEVk+1g1yiNe5sxFUlcBAAAQVOCgon1xZoYGUhvuQUG7tC+V7L1Bo85VW+5XGrK5br9IBRytrFRSpstKqimH/SvtPeXMoDuLazeV2l0pSFHuhGwDB81r4DK5tl3eefVfpk8ZtS/kLH0mR6Z8rNQvJL+yHV/uyyb6ugoAAAA/0T+orbuSFDblcEwrTTfmCptVcV4Eb9+vSENyUm0VJS1lyfQbxUnJn5quLDpVcyrAGH1uwtwNOLTvhARn96fXaVzf+8m5b5d3Xv35vq+hyt0uo25VcuVMP/jye9+027L0AtZVAAAA+AsVVLSaDTPk0GqqBqpqmJpGeqbcu8PgbKzrRnyqkpWWM6KoHfSm6avkybyc6mcuzgaN4iHbu6oJfCYXzva/vhvQyMk0PZ+S+dN+wHLq0cB0zauLa69z265J8qr0lznR+7Zl135GwO99E27Lspq2rgIAAGC8wEFFcicr6fLR4GHXdkmOymnJ7ow0wkceULaeT64OGuv6wd9U81C6/WcrvLTEsx2v+8zLpvR7Tim1k7Kki3ci6bYTNK9BXhdsuwZ5DVzOFkcZJXckmy7LiR0MmPdtpMz4EJ+y9Z23HKKqqwAAAAjo6uqq60xPPPGEal95qOa66i39pBpgRrWr2mOO8QHVUBtMbxW7acf7eymn3t2jX+ucly627DnW8t3eY7GWOzLNxeXlpRkKIGhePV+n+GyXd14Vn2X6vm+kfIO+b5J5Iumuc5VOE5XvrIWtq3O2UGUZsTjnLQj27XJa9XobFcpxOhxby2nV8pbQgYRqdPXV63XZ29szY/HS6XRkbW3NjCFqlG904lyWq15P2LfLifNbNCjH6XBsLadVy1v0D2oDAAAAWCncqUBkKN/ocOUmvti3y4nzWzQox+nEtdxe9pbvMEPx9qmf/i0zFB9udTLx67/+693nnnvOelD1zae/aE386I+Wrb8AAADALLzqZ3JmKN5WpV2dUJFG/07Ft773B6y/cYyoNK6QzBblG504l+Wq1xP27XLi/BYNynE6cS03+05FXNudcc6fW53kmQoAAAAAoRBUAAAAAAiFoAIAAABAKAQVAAAAAEKZLKioHUgikeinrVLbzHAYeU0vHUjNzLaY1xwMTRxol7auz3cud6skQ2seWueWuG1WYFHk0W8ZXvkIs0zNzL9WpkPvGykbr23Rxq1v0U2w/bWDweuu1VUAAACMNUFQUZODzJkUW13r62e7raJIYf96A377uDffTtWcSG5Xts1sqwF3sit6sqt2SfYrWSkOzVfrPtqQlrXMlhSlIPv2itXrtzIi1f76NqWQmrZhGEUe/Zbhk4+Jl3m3n0fPMvUtG59tGbO+xee3D4bpsstItfc6Kx336yoAAACCCR5U1E6knDuUfNKMJ/NymGtI5b5LS62vLaWjsmobD5pp28eq4Xbs1WxTr9+vSPZeXtbNlJ5tOT7NS2/VSdnJpq0hrX2/Ig1H0CLbu5KTM7nw2ywvUeTRdxne+Rh2vdz8eJWpf9kE3ZYlFHg/1uSknJOqZ30EAABAEIGDivbFmRkaSG2MaYjW7kpBinInYJutXdqXSvbeoDHoqi33Kw3ZXDfN4fVNkfKJ4yp6SjbSDWm2zOgEoshj8GUM52PItXJTAUArK5WU6aKTasphgCvqwctmdFumW9+iCLwP2hdylj6To37XJ5W8+uQBAADA0wwf1DZX2w/tq+Fj6G5PhU059I8orMCjsFmV/sXl7WOp5sqS6TcMU1JopGUjZebP1IR5dLiWjz73ZVp3HSQn1VZR0qLyG6TxG7Bs3LZlqvUto4aqc/2uT1XJlTOez/oAAADAXaigotVsmCEX+mp7IycBe/DohalG7KABnCmLlDPDD9jqB7hTlay0RlriVvcfZ8NQNsXtBsA0osjj6DK88mFxW2btoPd6fbcgmZdT/QzEWbDG77iycd2WEOtbVL77sW9bdr2e9QEAAICnwEFFcicr6fLR4GHXdkmOymnJ7ri33msnZUkX7wTvMjPyoLL1nHK1K6fmzoV+oDbVPJRu/zkAd7WDjJSdzxFMIIo8jlvGuHwEK7eWBGojjxgtm6BlOu365iXwfkzuSDZdlhM7WDKvu5m7XAAAADHS6XS6dnrgzd9uJU/VXFe9pZ9Uo9+odlUMMBhvFbtpyamp16lgYWgZIulusWVmOujXDS9v9H1m+aPzBht1zeXlpRnyEUEePZfhlw9tgnJLOwrNs0z9ymbMtvitz0ug8r0pE+1Ht9fN10KVZcTinLcg2LfLadXrbVQox+nEtdzGtjuxsNzqZEIHE6oxZfnW9/6A9fdTP/1b1t+4UXmVtbU1M4aoUb7RiXNZrno9Yd8uJ85v0aAcpxPXcnvZW77D+hundqedp1Fxa1u71ckZPqgNAAAAYBUQVAAAAAAIJfHrv/7r3eeee856OPrNp79oTfzoj5atvwAAAMAsvOpn4vWVi7qLk1f3p1VoWyeurq76z1Ro9Xpd9vb2zFi80Jdztijf6MS5LFe9nrBvlxPnt2hQjtOJa7l5NcCXlV9QsQrPVBBUIDKUb3TiXJarXk/Yt8uJ81s0KMfpcGwtDx7UBgAAABCKDh7spLs82cOrgKACAAAAQCgEFQAAAABCmW9QUTuQRCIhBzUzvigm2K52aev6a8377bRVapsZg9f30pY4ZllqB4P3JRIH0ltsW0pbzukqOVfotb6R6b1kL3PMtvjkYSkE3f5lzycAAMACmFtQYTWeT3alumDfJjbRdrVLsl/JSnHotTU5yJxJsdW1vqa32yqKFO6ahnxN7qrXt/R0lXqzBsGBXndGqr33WelYts08LVe1p6t0bM9xW99+L0DYPh68XiedqdyuWabftvjlYRn4lMmQZc8nAADAYphbULF9rBpx/Ybx4gi+XW0p7Vckey8v62bKeNtyfJqXpBlrNRuS3kiZsZqclHNSnbRMaidSzh1K3l5oMi+HuYZU7o+2oNX2HpVVTGEv329bllzgMgEAAEAUeKZiSu3SvlSy9wYN1z7VWG9lpZIyXWpSTTl03HFwdjnSdyVO7QW0L+QsfSZHZp6VRvpflTODefas9sVZb8AhtZE2Qw61u1KQotxxxCye2zImD4sucJkseT4BAAAWBUHFNHS3p8KmHF6PKCzt+xVpSE6qraKkpSwZR3CQzJ/2utroLkcbR5LYKkn/+nlDLdPM63arkitnTPCQlPypPV2lak4FGINnI8YzdykOB3cmNL9t8ctDnKxKPgEAAGaJoGIaraZqiKoGqH2Vv9y7i2A95Fs7kJT1rMKxbCfzctptSfHMDg6GJfOHkmtUxL1Xzrbsej3Xsb2rmsFncuHRm0d3ZRqi71I0ctLv+eRiaFsmyMOyuFYmWgzzCQAAMA8EFdMYeQDaev652nV0H3JqSb89q79pyNli1X3/ZVPW9duSO5JNl+XEnt0uyVE5La6POTjel9zJSrp8NHgI2bwvuzPYltpJWdLFO8Pdevy25RpHHpZAkDJxt1z5BAAAWBhXV1ddZ3riiSdUO3n2VEO8q1bvSOlusWVmzsjl5aUZ8ua9XdWuih26Kni4Rr/HOX10Gel+xlrdYto5L6eW6tAqdtOO9w2W2Vu35/uqOce8kW20ljnyeov/tnjnwVuQ8r0xnmUyvB+nyedNWKiyjFic8xYE+3Y5rXq9jQrlOB2OreW0anlL6EBCNab66vW67O3tmbF46XQ6sra2ZsYQNco3OnEuy1WvJ+zb5cT5LRqU43Q4tpbTquWN7k8AAAAAQiGoAAAAABBK4vz8XHeD6j903Gw25fbt22Y2AAAAAPjjmQpEhvKNDn1M44t9u5w4v0WDcpwOx9ZyWrW80f0JAAAAQCgEFQAAAABCIagAAAAAEApBBQAAAIBQCCoAAAAAhEJQAQAAACAUggoAAAAAoRBUAAAAAAiFoAIAAABAKAQVAAAAAEIhqAAAAAAQCkEFAAAAgFAIKgAAAACEQlABAAAAIBSCCgAAAAChJM7Pz7uK2KnZbMrt27fNbAAAAADwl7i6uuqaYUu9Xpe9vT0zFi+dTkfW1tbMGKJG+UYnzmW56vWEfbucOL9Fg3KcDsfWclq1vNH9CQAAAEAoBBUAAAAAQiGoAAAAABAKQQUAAACAUAgqAAAAAIRCUAEAAAAgFIIKAAAAAKEQVAAAAAAIhaACAAAAQCgEFQAAAABCIagAAAAAEApBBQAAAIBQCCoAAAAAhEJQAQAAACAUggoAAAAAoSTOz8+7itip2WzK3t7rzGxgMp3OpRlCGGu3bpkhxFHnkuMEABAviaurq64ZttTrdYIKhDBUnTCtRMIMIJa68TxOOp2OrK2tmbF4iXPebhLlOB2OreW0anmj+xMAAACAUAgqAAAAAIRCUAEAAAAgFIIKAAAAAKFEHlSUtnrPmJbaZoLDgZqu59XMeLsksqWSzZqv3u98q55mvz72VEZ1+RyMZthMt5OzzAA3uoqoqmL9HXWgkp7XPw5VUoddnz1/6DhUaZmOQ739eptH6el2cuZZ85sHAAD8zeRORS4nUrlvRmyqRVJOi6j/fen5d5ep9RKRmmoBJU5EqqrsRh1kRIqt3hfGdNVfKbgHbYCTrkqV3uCQskqBjsPe4FLRpw4dFFStsWE6yCiqpL93yf7uJTvo8psHAADGm0lQsbGr/lENX2dsUDpSH9qHZsRHNqsaPaoR7RZX6LsW167ix8T2sWrMqHSNym9ZtQ7zSTOu/h66BW3AiA3zd+g4VEk3nsdRh6EVfLgehyYtom2V7KBglM5Pvjdo0acjO+jymwcAAMabzTMVKdUoSYuc2C2Sdu8DekdNH2und7X+yOUy4bFqLRzrVsMKaV+YAYeU3VoExtDBwUlv0GIdh73BsfTV/qPe4BAd+7rFv4vM7caefTrymwcAAIKZ2YPa+UORsmnN1O6KbKpx+2L7ONt31D8jdzoATE5ffddX4TV9PG2qFPg4NH85DgEAwDgzCyp0iySnWjO67/+J+rs7yR0G08XH7W4FRFpNMwAEoJ+t0IeSjvF1z8RJ6G5Abncr4kA/nuTFbx4AALhudkGFsqtaM4WUyFlxcNUzKPtuhX2VdVUld0TSJjizqL9HajwbtA8LVp55xEnOVJr4ODR/l/041Hdn9MPnzusUOljS3cP85gEAgGBmGlTowEB/WE/VADZ3K5zi/KC29e1PKn8Z1XrTD6rrYSuQUOVwWu0FZ9ZXyqq/m2q8/+A2MIYODKzj0BqbnL5b4bTID2rr04M6TEQdQlYgpIftYOFUJR1c6Wk66a5g9sPZfvMAAMB4iaurq6EvS6nX67K39zozBkzK67t3MBEdQSK+9PdDx1Cn05G1tTUzFi9xzttNohynw7G1nFYtbzO9UwEAAAAg/ggqAAAAAISSOD8/7ypip2azSfcnTK3TuTRDCGPt1i0zhDjqXHKcAADihWcqEDGeqYgEz1TEG89ULJ045+0mUY7T4dhaTquWN7o/AQAAAAiFoAIAAABAKAQVAAAAAEIhqAAAAAAQSqRBRWmr93yp9UvQI/SvYet5oz+IbU13/Dxvu6TG1XKci9CvcVtmrKiCsX4x26Qt+2eANb95wAhdPVQ16f+StJM+1PS8a8ehSnq6TR9uenzoOFRp0auenXdncnJOV6eZIX7zAACAv8jvVORyIpX7ZsSmWjDltIj6f4gOIM7U69PlQSMnmRcpqr/7pvVSUy2ZMzUhn+yNx9VBRuW71ftSmK76K4VBmbjNi32QhVDUYSWV3uAQdahdPw5VOlNJT+8fhypZx6E11puuX6MOz4Wn866/W8lONh0U6Tw5p9tBkt88AAAwXuRBxcau+sfRINZKR+oD+9CMONxXrZ7sHZVUa+bE8Yb8PfWPXoZq7RypVtChoyWj71ocOBcedyqvZdVK6gdV6u+hW+AGOGyYv0PHoUq64TxKV6WsSSd6gmEfdnoZ6hAW5yGsG+E6LRMdUDmDIp0fO/DymwcAAMaL/pmK1EiQoAID/eG8o6YPsaerRnJefYKXna0Z03DOqPdsVkW2zWTtuKuSc0JMHLdUeaj8Wl2c1N9DlU+dzfZFb75Tym4xAj5GgwTreOsNDrGn60a1blw76cZ1RqVNlYaOQ5MWkc6D3Y3JDnzcbuzZpyS/eQAAIJiZPKjtDBJqd1WDRI3bF9ptbXN51JquWis51RJw69Jz5tKojiNdHg31t6qCC90NJbNsl4GxcJxBgo7xdWBw7Tg0f+3puuuQW7cf3fVpGeg8212YdNL5d96tAQAAszGToMIZJJyov7sudxbuFlQjWiX74WP94d/v0qNaARnVimmNPFsQWyqDqYrKr747oVp3p+pvUeXfq5tXq2kGgDHsIEHH+Lpn4igV81vBrH1l3zoOVbLpuxT6MNSW8TjU+fe6LmHny43fPAAAcN1sggplV32aF1K9h6yvxRSqdaIf3NaNaOvhY52qqnGjWjP6yql+BiOn726oBvY99f5VvGrf1C09JbnTe5C9fxdH/dXPmWTd+rEAI8wjTtadBpfY3goidANaHYL9pKuedRyqpBvl+i6GfsxJBxjLRudvXSWdB30H0HkXRj8noruI+c0DAADBzCyo2L7T+6B2a/zWTtQ8u+uTTd/dUK2ZuyqAKGwOnpvQ3wal73rYV+1j+aC2ymtV5Tll7tropIMxqwxUIZ2qgEsHaPbzFvo5k7h/GxaioauQdRxaY8P0YaTnjVYlHUjoOxg6GLGfm9Cv0dPt+F7/XcRYX2+TOkz6SR0q/WDqVCWdJ3ue7g5mP5ztNw8AAIyXuLq60hcn++r1uuztvc6MAZMaqk6Ylo4gEV/69mwMdTodWVtbM2PxEue83STKcTocW8tp1fI2szsVAAAAAFYDQQUAAACAUBLn5+ddRezUbDbp/oSpdTqXZghhrN26ZYYQR51LjhMAQLzwTAUixjMVkeCZinjjmYqlE+e83STKcTocW8tp1fJG9ycAAAAAoRBUAAAAAAiFoAIAAABAKAQVAAAAAEKZaVChf/064fjZ3dKWmjb6a9hqPKGmt81ou9R7RtVOW2p8ldj5HyonXUZ2mTjKCgjC/pVpmz6k3H4NW7+mfxyqpMftpKrdUhjd7tHTh3PeaJ70IeecP3qqAgAA3mYWVOjG8VlOJF0efDjvZEXKJ2bEqKnxtJqe1MOqpZOqiLS6vS9H0Smrxlfmw121iPZVfouq3JwOjgZlUlTj+ysWaGF6upF9plJapf5xqJI6LIfoefo11nGoUkqllkqqyllJHaJLcRzeVcnebv23oJJNB1L6+LHzpNmHks5bRiV7nk7bKgEAgGBmFlTcV43j7B2VVEvlxLRGkqo14wwytBM1ntWtHNX6OVLD1dNew8aWV+P2h7u+83HtTkeMlPZVWdwTWTfjtmNHmejADAjqvkq6yuhkx/O6LjmDDE3Ps6uWimGlqtLQcahS/zg0aREdq2Rvtw4qdD5tOpDS+bAdqqROUxadf51nAAAwndkEFSpA0B/WO+rTPa8+uft3J9S4M8jQrZqyGteva6vWTyPnf3XwuKtSTC8f6js7FdWqyztbci50sLY5GnUAHqzjUCXdmHbenXAGGZqeZ2J7aajkexyatIj09tvdl/SdBxWPW/T0UfpujE3fzdHBlP1enQAAQHAzCSp0gKBbLVb7WLVOcqrFUjKf6s4gw9n1aZT1PIZJMb450aPKZr8gcui8jOpCBx6FzfgGVoiW3ZC2jy/dq87u7uMMMvTxpa/oux6HKtmN7GU4DnUe7O5L+k6F3m63gMKNvnNhv1eX1aLejQEAYBHNJKi4qxrIDZXsoEA3Xio60NBMkKEbKLrrk92QTuqr72a6pu9K6GcIRh4viCfV+tFXhzOmvDKqHMqZ4YfUdUBhPW+yqJeIsXD08wW6XumGtU7WcaiSTR9b1nGokm5Qa3Zg0T8OVbIb2ctG50Vvt33qGaWDDi+75i8AAAgm+qBCtUZ0lybnw9bdqmrcqNaMfcVwV33SH22p16m//YvuaqCo3pdZxW83Unnvl5VKVVUuOVVmpybgsh5gb6p5I8+bAH50EKEbzqpK9ZMOMvrHoUq6y49+nfPml36YWXcdWsbjUAdPTjpv+nqFPm703RhHnG7l3X6OZLQ7mJ630RsEAAABRB5UuHZp0ncnVGvmvmmlbKvWTEON50YuB+qHsqubqgFtrthbdzlUS8Du+xz3B7VdqTLTD7Dr1pFdJjqtWjFgMrp+uHVpcl6514GEDjL0NCcdy+qHlvVxp6pa/y5H/zg0aRHpgMjeZp10PuyAST9fob8Nyp6nTjX9B7f1X/1chds8AAAwXuLq6kpfwOyr1+uyt/c6MwZMaqg6YVo6ckR86VuSMdTpdGRtbc2MxUuc83aTKMfpcGwtp1XL22y+/QkAAADAyiCoAAAAABBK4vz8vKuInZrNJt2fMLVO59IMIYy1W7fMEOKoc8lxAgCIF56pQMR4piISPFMRbzxTsXTinLebRDlOh2NrOa1a3uj+BAAAACAUggoAAAAAoRBUAAAAAAiFoAIAAABAKKGCitpB73lSnbZKakJb/TXjo6mk5pW2RqaP/Cyv/sXs0fn6Pdd+RVuNJ9R08wPd0dLLttc/so5x2+/kLBudhrJg1uGaL/s9Hvlrq3K+9l7n+1TSZe3kuS0+75skr5gvvT/VLrKS2m0W/dee5kz6MNVpdLqT3tWj8/V73KqAnjeT41DRy/aqdnqdo/PtaXbS2+zF+Tq7zLRxZeOc7pZvt+0CAGAVTB9UqJZM5kyk1e19kclhU01Kipya8VZRJK2SHtYpr+ZpxdZgWlG9f7Tx7JzfPRbZyYqUT8xMo6bG02q6WWSkDo4GeVKbL/sjLZNcdXj73OhGfEb97b9Ope3erF4DX21/NWcmOIxbty6o/Yqa53yvmralVla116W2r5Cydo/Fc1vGvE8LklfMn96/6rCxvnfrUCW9D0/NuJ6eNsM65VXSdP2yp+nh0Uayc75OOyqVVXLS69HLjvo41MvV26Oqn6d9lfQ2Ot1VyS4H/begkhvd4HfmT3MeavrwsufZ8zX9Pnv5+v16G0a5bRcAAKsgsu5P26rRaTecg8qrlk+uoRoDzpbsiKRqzaRVa8b5khM1ntWtHEXf3bh2xT+EY7VNdiNJBzTT0NtX9WiE63LyaqCPW3dJtViy90TWzbjWvi/SUK2gftmrAd0oujAtRK9tGfc+LCe9P/v7NCAdaOh9rxvlXnS91AHE0HGokl1NdYNbpyjo7Xc25kfpAECv13kcaLqa28ePHUy50cGRHVxpOhBTsfpYzuWb088Qr+0CAGAVTB9UqE/+6qZISjXqra5PU9pVrZmzCzOi6KvlQ91x1Kd4VrUOTuzWjPpbVuM75tP9WLU+jidtRQV0X7U0NkdaCOXMYPtcgxm1zWdq+47Ma6w0RWtrdN2621NFtVjsOz62pH7NSNC1odbf1K0qn23xfZ8xNq9YCPqKvjpshrrxTGpXpbPeoEVf5Ve73Ur24a0bzM6bhrpxbjeudYPbI1aOlD4l6ADAGRTY9Dx7m/XdG323ZpR+zShddk46X/ZyvA5dFZOLOv31+W0XAACrINSdCuuqu2rUZ9WnqW54jvblD8rZeHZ2f7Ib0PlD9UFvWjOz7PrkpBvxBdVqcAYs+s5KvzuQasnpRrdrW7shcmi/TqWcaqVM0ii/tm5VrvuqlXfo1mLRwZ0KzDKq/O0AoKDWv2G3lLy2Zcz7AucVc6eridpNVqNf7cahrjyTcDaSnd2D7Gqn/+oGt6brgopBZ34cjtLdi/SdBTd6W+xt1rGxLotJT0k6j/YydNL5Ha33epk66HIGUX7bBQDAKoik+5NugOoGakVfvpuQ7p7TbwB7Ua0m3RjWH+769a6N6wjpRn1KBUotv0uvepvUnyDdhfTdmKBc161aSKq93w8AMqoMdCPfvkNkB3f9wEFNW/do7Tm3JfD7Jsgr5kcfFvquhb5iPikds2/0Bn3pemAdhyrNoxFtHQcq6YBB/9WNfrc7NLoa620Nckpy3Jy7xqr3vUGLPgT06Wr0PUG3CwCAuJo6qNCNX+fV94uz612FxtEPETu7MvnRjeEj9SldVn/1ldlZ0duUaqpGtuP5Blcq77rhcK0RrsaHumupVsiReuHYwEnxXLfKsLPxrwM4/RD1qUtwZZWpXUYTbMvQ+0Z55RVzpxu5atf16Qaw845DELp66P3r9pzAKN1N6kgl/fpZHodeVPXvJx1AqSrb7+akG/ROVp3tDfbpKqzvsDjv5uj86Ls8bpzL0OWkDx297tFDwW+7AABYBVMHFUndoM30rpxbXWdGugp5cT4zoa/ojTagnfOdzyJsq9ZMo6E+rHWrxiHSB7VNo1u3JPrboJK9+KGvvFUbr785yc6yczvy90TO7LJR+dlUrQy7K5duvOvp9t0GPWx1Gxuzbk/qfc6v8bXK1HGXw3NbxrzPL69YHPaxo3aTlUa75XhxPjNh7XuVho5Dlez5Otl0HdBX5XWj2Ukfqs7gJgxd5+3t0oeEHnYGAV50ly3nNuvGff/4NEnTjX1n/nQQZsfn+jVey9DBh+acH9WpBwCAZZe4urrS7Ym+er0ue3uvM2PApIaqE6aloznEl77lGEOdTkfW1tbMWLzEOW83iXKcDsfWclq1vEXyTAUAAACA1UVQAQAAACCUxPn5eVcROzWbTbo/YWqdzqUZQhhrt26ZIcRR55LjBAAQLx7PVOyZsXihL+dsUb7RoY9pfLFvlxPnt2hQjtPh2FpOq5Y3uj8BAAAACIWgAgAAAEAoBBUAAAAAQiGoAAAAABAKQQUAAACAUAgqAAAAAIRCUAEAAAAgFIIKAAAAAKEQVAAAAAAIhaACAAAAQCgEFQAAAABCIagAAAAAEApBBQAAAIBQCCoAAAAAhEJQAQAAACCUxPn5eVcROzWbTbl9+7aZDQAAAAD+EldXV10zbKnX67K3t2fG4qXT6cja2poZQ9Qo3+jEuSxXvZ6wb5cT57doUI7T4dhaTquWN7o/AQAAAAiFoAIAAABAKAQVAAAAAEIhqAAAAAAQCkEFAAAAgFAIKgAAAACEQlABAAAAIBSCCgAAAAChEFQAAAAACIWgAgAAAEAoBBUAAAAAQiGoAAAAABAKQQUAAACAUAgqAAAAAIRCUAEAAAAglMT5+XlXETs1m025ffu2mQ0AAAAA/hJXV1ddM2yp1+uyt7dnxuKl0+nI2tqaGUPUKN/oxLksV72esG+XE+e3aFCO0+HYWk6rlje6PwEAAAAIhaACAAAAQCgEFQAAAABCIagAAAAAEApBBQAAAIBQCCoAAAAAhEJQAQAAACAUggoAAAAAoRBUAAAAAAiFoAIAAABAKAQVAAAAAEIhqAAAAAAQCkEFAAAAgFAIKgAAAACEQlABAAAAIJTE+fl5VxE7NZtNuX37tpkNAAAAAP4SV1dXXTNsqdfrsre3Z8bipdPpyNramhlD1Cjf6MS5LFe9nrBvlxPnt2hQjtPh2FpOq5Y3uj8BAAAACIWgAgAAAEAoBBUAAAAAQiGoAAAAABAKQQUAAACAUAgqAAAAAIRCUAEAAAAgFIIKAAAAAKEQVAAAAAAIhaACAAAAQCgEFQAAAABCIagAAAAAEApBBQAAAIBQCCoAAAAAhEJQAQAAACCUxPn5eVcROzWbTdnbe52ZHT+dzqUZAgAAABCFxNXVVdcMW+r1eqyDCpGh7AILqdPpyNramhmLlzjnLQj27XJa9XobFcpxOhxby2nV8kb3JwAAAAChEFQAAAAACIWgAgAAAEAoBBUz1i5tyVapbcZWQU0OEgfqXwAAAKyKFQ4q2lLa2pKh9n67JFshG8S1g4QkDoIsYTbrn57eHrXtCUcayUfwvAEAAGCVcKciYtvHXekeb5uxZZOWYsv+euGWFM8yktgqqXCjZ7nzBgAAgFkhqPCku/E4r9w77yqMXtUf3F2IrrvTuPVvycHBljXPXp91J8H5Hisg8FuOn6TkT6uSaxTkrsnccN68y2Cgt+7+zY3ageP1junW6w6kpJZ/fR4AAAAW3YoHFQ0ppAaN3ESqoKbYtuXY8aOA3eqmFPbNVfvaXSlsVgfzusfq1dOYcv2WhpTl0Jp3mk/qFr8cnRWlZb1eBQP6rsO9vAoNxi3Hz7bs5kTOLlxePbYMdKCQEal2xbq5obt2Zc4Gd0JaRTnLOAOcshSavfx0qzkpZ3guAwAAYFmseFDh7O7Ta+imzRxNX5nvN/gzZTNV2d6VXDmjpodt+E65fot6751goYz/csbbXFdByyjfMihLxhlQaK2mNHKHouMfSzIvh7mGVO7bUUVOqvaL9bJ7QwAAAFgCdH/y0i7JfmFTtYvdGvz21f9dObEa6zO4qu67fhfJddlsFCRlbU9Gzor3eg34SZczpCYn5bRspMzoEL8yUAFCwLsNrgELAAAAlgpBhRd9ZT29IXZ7unbX2TXJphvWLSmmy3ISdVQRaP0OtRMVSLR6gYNKVpcobdLlONQOMlJOZ2XHt93vUQbbx9IqnknGftA7tSHp8tGgu5PuruUZsAAAAGCZEFR4UY3i6qZ95T8hGcn1u+QMdSdKpKxnCyL/UiSf9btSjXYppBzbZR52nmg5w894ZKQq3VP9XMZ1QcogmT+11r2vI4lkXk718xz28lMF2ayeDrpDAQAAYGklrq6uumbYUq/XZW/vdWYsjoayGxv6m5+ONlqDOxT6m5ZOdvkK2CXV6XRkbW3NjMVLnPMWBPt2Oa16vY0K5Tgdjq3ltGp5405FTGzfKQ7fqdDPSRNQAAAA4AYQVMSF7l5kP4xtpWm/5hYAAACYTOL8/Fy1QQeN0WazKXuvi2/3p87lpRkCAAAAEAX3ZypiHFSoyMkMAIuLPqbxxb5dTqteb6NCOU6HY2s5rVre6P4EAAAAIBSCCgAAAAChEFQAAAAACIWgYsb0j8Rt9X9Geho1OUgcqH/jJ3zZAAAAYBGscFDRltLWlgy1adsl2QrZgNc/Qpewfsrah7Ue83sSQ6m3PYGW4cklX9qYdU4i3PYBAAAgbrhTEbHt4+74X7F2/KZEq5iWdLFlvtL3VPQPYgdaxqTGrHMSM9k+AAAALC2CCk+625HXFX19N8A5b3B3I4ouPd7L6G2TfZNAv66/DdZEvV0pKTQaUkipaVslNSWY68uyplp3PQ4OevPsbRrevtHuWc5xvzIEAABAXKx4UGEa33ajN1VQU2zbcmyu7FupuimFfdNIr92VwmZ1MO9Gfr1aN9AzItWuWDcJ2iXZr2SlZbahKhkVbCQlf9qSYjotxZaafpqXQDchXJdl5qkSKcuhNf100lsafmUIAACA2FjxoMI0vu1Gb6uopgwMXb3PlM1UZXtXcuWMmn5TD1CXJeMMKJT2/Yo0GgVJme3Tm3d2MV1z3X9ZqozuTB8yeZYhAAAAYoPuT1701fvCpmrHuwUc9hX4XTmxGsyzDi5yUq3mpJwZWU/OebdkmjsJDlEuy+ZbhgAAAIgLggovraY00huSMqO1u86uUTYdXOjuRmU5mfUti+1jaRXPJGOek0juZCVdPokkmAm/rEH+26UjNWYEKkMAAAAsO4IKL6oRX910dAmSnPqvZ6hLTyJlPV9xE1+GlMyfWtu0r592Tublng4y+tthPwSdFBUjTPagtueyglCBlXUXpffefcn2y8mvDAEAABAfiaurq64ZttTrddl73evMWAx1h7KLKeigal/uRdNFCq46nY6sra2ZsXiJc96CYN8up1Wvt1GhHKfDsbWcVi1v3KnABHpfpZsqiGR3CCgAAADQQ1CBCeivrNUPXU/+g3kAAACIr8T5+XnX+a0/zWYz1t2fOpeXZggAAABAFNyfqdjbM2PxQl/O2aJ8o0Mf0/hi3y4nzm/RoBynw7G1nFYrbyL/P5P5qlORMc8VAAAAAElFTkSuQmCC" /></p>
+</section>
+<section id="jenis-jenis-normalisasi-data">
+<h2>Jenis-Jenis Normalisasi Data<a class="headerlink" href="#jenis-jenis-normalisasi-data" title="Link to this heading">#</a></h2>
+<p>Terdapat beberapa metode normalisasi yang umum digunakan dalam data mining dan machine learning, antara lain Min-Max Normalization, Z-Score Normalization, dan Decimal Scaling.</p>
+<section id="i-min-max-normalization">
+<h3>I. Min-Max Normalization<a class="headerlink" href="#i-min-max-normalization" title="Link to this heading">#</a></h3>
+<p>Min-Max Normalization adalah metode normalisasi yang mengubah nilai data ke dalam rentang tertentu, biasanya antara 0 hingga 1. Metode ini dilakukan dengan mengurangi nilai data dengan nilai minimum kemudian membaginya dengan selisih antara nilai maksimum dan minimum.</p>
+<p><em>Rumus Min-Max Normalization:</em></p>
+<div class="math notranslate nohighlight">
+\[x' = \frac{x - x_{min}}{x_{max} - x_{min}}\]</div>
+<p><em>Keterangan:</em></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x\)</span> = nilai data asli</p></li>
+<li><p><span class="math notranslate nohighlight">\(x_{min}\)</span> = nilai minimum pada dataset</p></li>
+<li><p><span class="math notranslate nohighlight">\(x_{max}\)</span> = nilai maksimum pada dataset</p></li>
+<li><p><span class="math notranslate nohighlight">\(x'\)</span> = nilai hasil normalisasi</p></li>
+</ul>
+<p><em>Dataset</em></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Harga Diskon</p></th>
+<th class="head"><p>Tiket Terjual</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>10</p></td>
+<td><p>500</p></td>
+</tr>
+<tr class="row-odd"><td><p>20</p></td>
+<td><p>420</p></td>
+</tr>
+<tr class="row-even"><td><p>40</p></td>
+<td><p>300</p></td>
+</tr>
+<tr class="row-odd"><td><p>60</p></td>
+<td><p>210</p></td>
+</tr>
+<tr class="row-even"><td><p>80</p></td>
+<td><p>100</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>Nilai Statistik</em></p>
+<ul class="simple">
+<li><p>Nilai minimum (<span class="math notranslate nohighlight">\(x_{min}\)</span>) = 10</p></li>
+<li><p>Nilai maksimum (<span class="math notranslate nohighlight">\(x_{max}\)</span>) = 80</p></li>
+</ul>
+<p><em>Contoh Perhitungan</em></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x' = \frac{10 - 10}{80 - 10} = 0\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(x' = \frac{20 - 10}{80 - 10} = 0,142857\)</span></p></li>
+</ul>
+<p><em>Hasil Normalisasi</em></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Harga Diskon</p></th>
+<th class="head"><p>Normalisasi</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>10</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>20</p></td>
+<td><p>0.142857</p></td>
+</tr>
+<tr class="row-even"><td><p>40</p></td>
+<td><p>0.428571</p></td>
+</tr>
+<tr class="row-odd"><td><p>60</p></td>
+<td><p>0.714286</p></td>
+</tr>
+<tr class="row-even"><td><p>80</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># 1. Input Data</span>
+<span class="n">harga</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">80</span><span class="p">]</span>
+<span class="n">tiket</span> <span class="o">=</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">420</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+
+<span class="c1"># 2. Fungsi hitung Min-Max Normalization</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">tampil_minmax</span><span class="p">(</span><span class="n">nama</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">min_val</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">max_val</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Min-Max </span><span class="si">{</span><span class="n">nama</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="c1"># Rumus: (x - min) / (max - min)</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">min_val</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">max_val</span> <span class="o">-</span> <span class="n">min_val</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">norm</span><span class="si">:</span><span class="s2">.9f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># 3. Eksekusi</span>
+<span class="n">tampil_minmax</span><span class="p">(</span><span class="s2">&quot;Harga Diskon&quot;</span><span class="p">,</span> <span class="n">harga</span><span class="p">)</span>
+<span class="n">tampil_minmax</span><span class="p">(</span><span class="s2">&quot;Tiket Terjual&quot;</span><span class="p">,</span> <span class="n">tiket</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="c1"># 1. Input Data</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">harga</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">80</span><span class="p">]</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;numpy&#39;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="ii-z-score-normalization-standardization">
+<h3>II. Z-Score Normalization (Standardization)<a class="headerlink" href="#ii-z-score-normalization-standardization" title="Link to this heading">#</a></h3>
+<p>Z-Score Normalization mengubah data sehingga memiliki rata-rata (mean) = 0 dan standar deviasi = 1. Metode ini sering digunakan dalam machine learning karena mampu mempertahankan distribusi data.</p>
+<p><em>Rumus Z-Score:</em></p>
+<div class="math notranslate nohighlight">
+\[z = \frac{x - \mu}{\sigma}\]</div>
+<p><em>Keterangan:</em></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x\)</span> = nilai data</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mu\)</span> = rata-rata data</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sigma\)</span> = standar deviasi</p></li>
+<li><p><span class="math notranslate nohighlight">\(z\)</span> = nilai hasil normalisasi</p></li>
+</ul>
+<p><em>Contoh</em></p>
+<ul class="simple">
+<li><p>Dataset Harga Diskon: 10, 20, 40, 60, 80</p></li>
+<li><p>Mean (<span class="math notranslate nohighlight">\(\mu\)</span>)</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[10 + 20 + 40 + 60 + 80 = 210\]</div>
+<div class="math notranslate nohighlight">
+\[210 / 5 = \mathbf{42}\]</div>
+<ul class="simple">
+<li><p>Standar deviasi (<span class="math notranslate nohighlight">\(\sigma\)</span>)</p></li>
+</ul>
+<p>Kurangi setiap angka dengan 42, lalu dikuadratkan:</p>
+<div class="math notranslate nohighlight">
+\[10 \rightarrow (10-42)^2 = 1024\]</div>
+<div class="math notranslate nohighlight">
+\[20 \rightarrow (20-42)^2 = 484\]</div>
+<div class="math notranslate nohighlight">
+\[40 \rightarrow (40-42)^2 = 4\]</div>
+<div class="math notranslate nohighlight">
+\[60 \rightarrow (60-42)^2 = 324\]</div>
+<div class="math notranslate nohighlight">
+\[80 \rightarrow (80-42)^2 = 1444\]</div>
+<p>Jumlahkan hasil kuadrat, bagi 5, lalu diakar kuadrat:</p>
+<div class="math notranslate nohighlight">
+\[Total Kuadrat: 1024 + 484 + 4 + 324 + 1444 = \mathbf{3280}\]</div>
+<div class="math notranslate nohighlight">
+\[Bagi 5: 3280 / 5 = \mathbf{656}\]</div>
+<div class="math notranslate nohighlight">
+\[Akar Kuadrat: \sqrt{656} = \mathbf{25.61249}\]</div>
+<ul class="simple">
+<li><p>Perhitungan</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[z = \frac{10 - 42}{25.29822} = -1.2649\]</div>
+<p><em>Tabel Hasil</em></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Harga Diskon</p></th>
+<th class="head"><p>Z-Score</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>10</p></td>
+<td><p>-1.2649</p></td>
+</tr>
+<tr class="row-odd"><td><p>20</p></td>
+<td><p>-0.8696</p></td>
+</tr>
+<tr class="row-even"><td><p>40</p></td>
+<td><p>-0.0790</p></td>
+</tr>
+<tr class="row-odd"><td><p>60</p></td>
+<td><p>0.7115</p></td>
+</tr>
+<tr class="row-even"><td><p>80</p></td>
+<td><p>1.5020</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># 1. Input Data</span>
+<span class="n">harga</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">80</span><span class="p">]</span>
+<span class="n">tiket</span> <span class="o">=</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">420</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+
+<span class="c1"># 2. Fungsi hitung Z-Score</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">tampil_zscore</span><span class="p">(</span><span class="n">nama</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Z-Score </span><span class="si">{</span><span class="n">nama</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span> <span class="o">/</span> <span class="n">sigma</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">z</span><span class="si">:</span><span class="s2">.9f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># 3. Eksekusi</span>
+<span class="n">tampil_zscore</span><span class="p">(</span><span class="s2">&quot;Harga Diskon&quot;</span><span class="p">,</span> <span class="n">harga</span><span class="p">)</span>
+<span class="n">tampil_zscore</span><span class="p">(</span><span class="s2">&quot;Tiket Terjual&quot;</span><span class="p">,</span> <span class="n">tiket</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Z-Score Harga Diskon:
+-1.249390095
+-0.858955690
+-0.078086881
+0.702781928
+1.483650738
+
+Z-Score Tiket Terjual:
+1.356146059
+0.796910571
+-0.041942662
+-0.671082586
+-1.440031383
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="iii-decimal-scaling">
+<h3>III. Decimal Scaling<a class="headerlink" href="#iii-decimal-scaling" title="Link to this heading">#</a></h3>
+<p>Decimal Scaling adalah metode normalisasi dengan memindahkan posisi desimal dari nilai data hingga nilai maksimum berada dalam rentang tertentu (biasanya antara -1 dan 1).</p>
+<p><em>Rumus</em></p>
+<div class="math notranslate nohighlight">
+\[x' = \frac{x}{10^j}\]</div>
+<p><em>Keterangan</em></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x\)</span> = nilai data asli</p></li>
+<li><p><span class="math notranslate nohighlight">\(j\)</span> = jumlah digit maksimum pada data</p></li>
+</ul>
+<p><em>Data Harga Diskon</em></p>
+<ul class="simple">
+<li><p>Data: <span class="math notranslate nohighlight">\(10, 20, 40, 60, 80\)</span></p></li>
+<li><p>Nilai maksimum = <span class="math notranslate nohighlight">\(80\)</span></p></li>
+<li><p>Jumlah digit (<span class="math notranslate nohighlight">\(j\)</span>) = <span class="math notranslate nohighlight">\(2\)</span></p></li>
+<li><p>Maka pembaginya adalah <span class="math notranslate nohighlight">\(10^2 = 100\)</span></p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Harga Diskon</p></th>
+<th class="head"><p>Perhitungan</p></th>
+<th class="head"><p>Decimal Scaling</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>10</p></td>
+<td><p>10/100</p></td>
+<td><p>0.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>20</p></td>
+<td><p>20/100</p></td>
+<td><p>0.2</p></td>
+</tr>
+<tr class="row-even"><td><p>40</p></td>
+<td><p>40/100</p></td>
+<td><p>0.4</p></td>
+</tr>
+<tr class="row-odd"><td><p>60</p></td>
+<td><p>60/100</p></td>
+<td><p>0.6</p></td>
+</tr>
+<tr class="row-even"><td><p>80</p></td>
+<td><p>80/100</p></td>
+<td><p>0.8</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>Data Tiket Terjual</em></p>
+<ul class="simple">
+<li><p>Data: <span class="math notranslate nohighlight">\(500, 420, 300, 210, 100\)</span></p></li>
+<li><p>Nilai maksimum = <span class="math notranslate nohighlight">\(500\)</span></p></li>
+<li><p>Jumlah digit (<span class="math notranslate nohighlight">\(j\)</span>) = <span class="math notranslate nohighlight">\(3\)</span></p></li>
+<li><p>Maka pembaginya adalah <span class="math notranslate nohighlight">\(10^3 = 1000\)</span></p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tiket Terjual</p></th>
+<th class="head"><p>Perhitungan</p></th>
+<th class="head"><p>Decimal Scaling</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>500</p></td>
+<td><p>500/1000</p></td>
+<td><p>0.5</p></td>
+</tr>
+<tr class="row-odd"><td><p>420</p></td>
+<td><p>420/1000</p></td>
+<td><p>0.42</p></td>
+</tr>
+<tr class="row-even"><td><p>300</p></td>
+<td><p>300/1000</p></td>
+<td><p>0.3</p></td>
+</tr>
+<tr class="row-odd"><td><p>210</p></td>
+<td><p>210/1000</p></td>
+<td><p>0.21</p></td>
+</tr>
+<tr class="row-even"><td><p>100</p></td>
+<td><p>100/1000</p></td>
+<td><p>0.1</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># 1. Input Data</span>
+<span class="n">harga</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">80</span><span class="p">]</span>
+<span class="n">tiket</span> <span class="o">=</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">420</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">decimal_scaling</span><span class="p">(</span><span class="n">nama</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">max_val</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">max_val</span><span class="p">)))</span>
+    <span class="n">pembagi</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="n">j</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Decimal Scaling </span><span class="si">{</span><span class="n">nama</span><span class="si">}</span><span class="s2"> (j=</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">):&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">pembagi</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># 2. Eksekusi</span>
+<span class="n">decimal_scaling</span><span class="p">(</span><span class="s2">&quot;Harga Diskon&quot;</span><span class="p">,</span> <span class="n">harga</span><span class="p">)</span>
+<span class="n">decimal_scaling</span><span class="p">(</span><span class="s2">&quot;Tiket Terjual&quot;</span><span class="p">,</span> <span class="n">tiket</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Decimal Scaling Harga Diskon (j=2):
+0.1
+0.2
+0.4
+0.6
+0.8
+
+Decimal Scaling Tiket Terjual (j=3):
+0.5
+0.42
+0.3
+0.21
+0.1
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Deployment.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Deployment</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="UTS%20PENDAT.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Analisa Data Kesuburan Tanah</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset">1. Dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hitung-jarak">2. Hitung Jarak</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hitung-kemiripan">3. Hitung Kemiripan</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#weighted-average">4. Weighted Average</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hasil-estimasi">5. Hasil Estimasi</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-hitung-selisih">A. Hitung Selisih</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#b-hitung-kuadrat-jarak">B. Hitung kuadrat jarak</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-hitung-bobot-kemiripan">C. Hitung bobot / kemiripan</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-hitung-bobot-nilai">D. Hitung bobot × nilai</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#e-hitung-nilai-pembilang">E. Hitung nilai Pembilang</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#f-hitung-nilai-penyebut">F. Hitung Nilai Penyebut</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#g-estimasi-nilai">G. Estimasi Nilai</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#normalisasi-data">Normalisasi Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jenis-jenis-normalisasi-data">Jenis-Jenis Normalisasi Data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#i-min-max-normalization">I. Min-Max Normalization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ii-z-score-normalization-standardization">II. Z-Score Normalization (Standardization)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iii-decimal-scaling">III. Decimal Scaling</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Nur Atiya Sukmawati
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

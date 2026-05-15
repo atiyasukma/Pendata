@@ -6,8 +6,9 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; Penambangan Data</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Modelling &#8212; Penambangan Data</title>
   
   
   
@@ -59,9 +60,11 @@
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
-    <link rel="index" title="Index" href="#" />
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Modelling';</script>
+    <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Deployment" href="Deployment.html" />
+    <link rel="prev" title="Data Preparation" href="Data_Preparation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -112,8 +115,6 @@
     <div class="bd-container__inner bd-page-width">
       
       
-      
-        
       
       <dialog id="pst-primary-sidebar-modal"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
@@ -167,11 +168,11 @@
                 </a>
             </li>
         </ul>
-        <ul class="nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="Business_Understanding.html">Business Understanding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Data_Understanding.html">Data Understanding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Data_Preparation.html">Data Preparation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Modelling.html">Modelling</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Modelling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Deployment.html">Deployment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wknn.html">Weighted K-Nearest Neighbor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="UTS%20PENDAT.html">Analisa Data Kesuburan Tanah</a></li>
@@ -254,7 +255,7 @@
       
       
       
-      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fgenindex.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FModelling.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -266,6 +267,54 @@
   </span>
 <span class="btn__text-container">Open issue</span>
 </a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/Modelling.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
 </li>
       
   </ul>
@@ -310,7 +359,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1></h1>
+    <h1>Modelling</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -324,13 +373,48 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
+  <section class="tex2jax_ignore mathjax_ignore" id="modelling">
+<h1>Modelling<a class="headerlink" href="#modelling" title="Link to this heading">#</a></h1>
+<p>Dalam proses data mining, modelling adalah tahap membangun model dari data yang sudah disiapkan. Pada tahap ini, data digunakan untuk menerapkan metode atau algoritma tertentu agar dapat menemukan pola, membuat prediksi, atau menghasilkan keputusan.</p>
+<p>Sederhananya, modelling adalah proses mengolah data dengan teknik data mining untuk mendapatkan hasil analisis sesuai tujuan.</p>
+<p>Beberapa kegiatan pada tahap modelling antara lain:</p>
+<ol class="arabic">
+<li><p><strong>Memilih metode atau algoritma</strong></p>
+<p>Menentukan teknik yang sesuai, misalnya klasifikasi, clustering, regresi, atau decision tree, tergantung tujuan analisis.</p>
+</li>
+<li><p><strong>Membagi data</strong></p>
+<p>Data biasanya dibagi menjadi data latih (training) dan data uji (testing) agar model dapat dibuat dan diuji.</p>
+</li>
+<li><p><strong>Menerapkan model</strong></p>
+<p>Menjalankan algoritma pada data yang sudah dipersiapkan untuk menghasilkan pola atau prediksi.</p>
+</li>
+<li><p><strong>Menyesuaikan parameter</strong></p>
+<p>Mengatur konfigurasi model agar hasil yang diperoleh lebih optimal.</p>
+</li>
+</ol>
+<p>Contohnya, jika menggunakan dataset kesehatan untuk memprediksi penyakit, tahap modelling bisa menggunakan algoritma seperti decision tree untuk menentukan apakah seseorang berisiko sakit berdasarkan data usia, tekanan darah, dan lainnya.</p>
+<p>Jadi, modelling bertujuan membangun model dari data agar dapat menghasilkan informasi, prediksi, atau keputusan berdasarkan pola yang ditemukan dalam dataset.</p>
+</section>
 
-<h1 id="index">Index</h1>
-
-<div class="genindex-jumpbox">
- 
-</div>
-
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
 
                 </article>
               
@@ -342,6 +426,24 @@
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="Data_Preparation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Data Preparation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Deployment.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Deployment</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
