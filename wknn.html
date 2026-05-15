@@ -650,16 +650,11 @@ Target Harga  : 45
 <section id="c-hitung-bobot-kemiripan">
 <h2>C. Hitung bobot / kemiripan<a class="headerlink" href="#c-hitung-bobot-kemiripan" title="Link to this heading">#</a></h2>
 <p>Berikut adalah rincian pembagian nilai berdasarkan jarak kuadrat untuk mencari tingkat kemiripan:</p>
-<div class="math notranslate nohighlight">
-\[\frac{1}{1225} = 0.000816\]</div>
-<div class="math notranslate nohighlight">
-\[\frac{1}{625} = 0.0016\]</div>
-<div class="math notranslate nohighlight">
-\[\frac{1}{25} = 0.04\]</div>
-<div class="math notranslate nohighlight">
-\[\frac{1}{225} = 0.004444\]</div>
-<div class="math notranslate nohighlight">
-\[\frac{1}{1225} = 0.000816\]</div>
+<p><span class="math notranslate nohighlight">\(\frac{1}{1225} = 0.000816\)</span>
+<span class="math notranslate nohighlight">\(\frac{1}{625} = 0.0016\)</span>
+<span class="math notranslate nohighlight">\(\frac{1}{25} = 0.04\)</span>
+<span class="math notranslate nohighlight">\(\frac{1}{225} = 0.004444\)</span>
+<span class="math notranslate nohighlight">\(\frac{1}{1225} = 0.000816\)</span></p>
 <p>Inti dari tahap ini adalah membalik nilai jarak menjadi bobot. Data yang jaraknya paling kecil (paling dekat dengan harga 45) secara otomatis akan mendapatkan nilai bobot paling besar. Dengan begitu, data yang paling mirip akan memberikan pengaruh paling kuat pada hasil prediksi akhir nanti.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -694,16 +689,11 @@ Hasil Bobot  : [0.000816, 0.0016, 0.04, 0.004444, 0.000816]
 <section id="d-hitung-bobot-nilai">
 <h2>D. Hitung bobot × nilai<a class="headerlink" href="#d-hitung-bobot-nilai" title="Link to this heading">#</a></h2>
 <p>Setelah nilai bobot didapat, langkah selanjutnya adalah mengalikan bobot tersebut dengan jumlah tiket terjual dari masing-masing data.</p>
-<div class="math notranslate nohighlight">
-\[0.000816 \times 500 = 0.408163\]</div>
-<div class="math notranslate nohighlight">
-\[0.0016 \times 420 = 0.672\]</div>
-<div class="math notranslate nohighlight">
-\[0.04 \times 300 = 12\]</div>
-<div class="math notranslate nohighlight">
-\[0.004444 \times 210 = 0.933333\]</div>
-<div class="math notranslate nohighlight">
-\[0.000816 \times 100 = 0.081633\]</div>
+<p><span class="math notranslate nohighlight">\(0.000816 \times 500 = 0.408163\)</span>
+<span class="math notranslate nohighlight">\(0.0016 \times 420 = 0.672\)</span>
+<span class="math notranslate nohighlight">\(0.04 \times 300 = 12\)</span>
+<span class="math notranslate nohighlight">\(0.004444 \times 210 = 0.933333\)</span>
+<span class="math notranslate nohighlight">\(0.000816 \times 100 = 0.081633\)</span></p>
 <p>Data yang memiliki bobot besar akan menyumbangkan angka yang lebih signifikan terhadap hasil prediksi. Sebaliknya, data yang jauh hanya akan memberikan kontribusi nilai yang kecil.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -741,10 +731,8 @@ BOBOT x NILAI
 <section id="e-hitung-nilai-pembilang">
 <h2>E. Hitung nilai Pembilang<a class="headerlink" href="#e-hitung-nilai-pembilang" title="Link to this heading">#</a></h2>
 <p>Pada tahap ini, merupakan proses menjumlahkan seluruh hasil perkalian antara bobot dan jumlah tiket yang telah dihitung sebelumnya.</p>
-<div class="math notranslate nohighlight">
-\[Pembilang = 0.408163 + 0.672 + 12 + 0.933333 + 0,081633\]</div>
-<div class="math notranslate nohighlight">
-\[Pembilang = 14.09513\]</div>
+<p><span class="math notranslate nohighlight">\(Pembilang = 0.408163 + 0.672 + 12 + 0.933333 + 0,081633\)</span>
+<span class="math notranslate nohighlight">\(Pembilang = 14.09513\)</span></p>
 <p>Pembilang merupakan total nilai terbobot yang akan digunakan sebagai angka utama dalam menentukan estimasi akhir.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -788,10 +776,8 @@ HASIL AKUMULASI PEMBILANG:
 <section id="f-hitung-nilai-penyebut">
 <h2>F. Hitung Nilai Penyebut<a class="headerlink" href="#f-hitung-nilai-penyebut" title="Link to this heading">#</a></h2>
 <p>Tahap ini dilakukan dengan menjumlahkan seluruh nilai bobot (<span class="math notranslate nohighlight">\(w\)</span>) yang telah diperoleh untuk digunakan sebagai pembagi pada langkah akhir.</p>
-<div class="math notranslate nohighlight">
-\[Penyebut = 0,000816 + 0,0016 + 0,04 + 0,004444 + 0,000816\]</div>
-<div class="math notranslate nohighlight">
-\[Penyebut = 0,047677\]</div>
+<p><span class="math notranslate nohighlight">\(Penyebut = 0,000816 + 0,0016 + 0,04 + 0,004444 + 0,000816\)</span>
+<span class="math notranslate nohighlight">\(Penyebut = 0,047677\)</span></p>
 <p>Penyebut ini merepresentasikan total kontribusi dari seluruh tetangga terdekat yang digunakan dalam perhitungan. Nilai ini sangat penting untuk menormalisasi hasil prediksi agar angka akhirnya tetap berada dalam skala yang logis (rata-rata terbobot). Dengan membagi pembilang menggunakan total penyebut ini, maka akan mendapatkan estimasi jumlah tiket terjual yang paling mendekati kenyataan berdasarkan kedekatan harga.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -820,12 +806,9 @@ HASIL AKUMULASI PEMBILANG:
 <section id="g-estimasi-nilai">
 <h2>G. Estimasi Nilai<a class="headerlink" href="#g-estimasi-nilai" title="Link to this heading">#</a></h2>
 <p>Hasil akhir didapatkan dengan membagi total pembilang (nilai terbobot) dengan total penyebut (akumulasi bobot):</p>
-<div class="math notranslate nohighlight">
-\[\text{Estimasi} = \frac{\text{Total Pembilang}}{\text{Total Penyebut}}\]</div>
-<div class="math notranslate nohighlight">
-\[\text{Estimasi} = \frac{14,09513}{0,047677}\]</div>
-<div class="math notranslate nohighlight">
-\[\text{Estimasi} = 295,6373\]</div>
+<p><span class="math notranslate nohighlight">\(\text{Estimasi} = \frac{\text{Total Pembilang}}{\text{Total Penyebut}}\)</span>
+<span class="math notranslate nohighlight">\(\text{Estimasi} = \frac{14,09513}{0,047677}\)</span>
+<span class="math notranslate nohighlight">\(\text{Estimasi} = 295,6373\)</span></p>
 <p>Hasil akhir menunjukkan bahwa pada target harga 45, estimasi tiket yang terjual adalah sebanyak 295,6373 (atau dapat dibulatkan menjadi 296 tiket).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
