@@ -434,7 +434,7 @@ saja yang paling dominan atau paling sering digunakan oleh model dalam menyusun 
 <p>Blok kode berikut dirancang secara berurutan dan menggunakan dataset riil dari konsumsi energi listrik harian Negara Bagian Victoria agar hasil analisis pemodelan menjadi lebih valid.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">skforecast</span><span class="o">==</span><span class="m">0</span>.15.1<span class="w"> </span>shap<span class="w"> </span>lightgbm<span class="w"> </span>-q
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">skforecast</span><span class="o">==</span><span class="m">0</span>.15.1<span class="w"> </span>shap<span class="w"> </span>lightgbm<span class="w"> </span>matplotlib<span class="w"> </span>-q
 </pre></div>
 </div>
 </div>
@@ -460,16 +460,8 @@ saja yang paling dominan atau paling sering digunakan oleh model dalam menyusun 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">3</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="ne">----&gt; </span><span class="mi">3</span> <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="c1"># Mengimpor modul resmi skforecast yang sesuai dengan versi 0.15.1</span>
-<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="kn">from</span><span class="w"> </span><span class="nn">skforecast.recursive</span><span class="w"> </span><span class="kn">import</span> <span class="n">ForecasterRecursive</span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;matplotlib&#39;
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/local/python/3.12.1/lib/python3.12/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
 </pre></div>
 </div>
 </div>
@@ -575,7 +567,7 @@ Jumlah data testing  : 32
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/b723e6a51a022c6046b9ef687271c15e97bac6f1d7689d6a907fd9124835cf6b.png" src="_images/b723e6a51a022c6046b9ef687271c15e97bac6f1d7689d6a907fd9124835cf6b.png" />
+<img alt="_images/0edd9aa1efd95b081726c35abfd05ae77d6955d4e004a2be6ffbdc161050bb73.png" src="_images/0edd9aa1efd95b081726c35abfd05ae77d6955d4e004a2be6ffbdc161050bb73.png" />
 </div>
 </div>
 <p>Melalui visualisasi perbandingan antara data aktual dan hasil prediksi pada gambar di atas, diperoleh beberapa kesimpulan utama, yaitu:</p>
